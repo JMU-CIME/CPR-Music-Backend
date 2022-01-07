@@ -1,3 +1,16 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Transposition, Instrument
+
+
+@admin.register(Transposition)
+class TranspositionAdmin(admin.ModelAdmin):
+    list_display = ("id", "name")
+    search_fields = ("name",)
+
+
+@admin.register(Instrument)
+class InstrumentAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "transposition")
+    list_filter = ("transposition",)
+    search_fields = ("name",)

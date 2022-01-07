@@ -273,3 +273,4 @@ MailHog
 teleband/media/
 
 .pytest_cache/
+.env
