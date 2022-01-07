@@ -81,7 +81,11 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     "teleband.users",
-    # Your stuff: custom apps go here
+    "teleband.assignments",
+    "teleband.courses",
+    "teleband.instruments",
+    "teleband.musics",
+    "teleband.submissions",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
