@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Submission, SubmissionAttachment
+from .models import Submission, SubmissionAttachment, Grade
 
 
 @admin.register(Submission)
