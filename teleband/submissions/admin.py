@@ -13,3 +13,16 @@ class SubmissionAdmin(admin.ModelAdmin):
 class SubmissionAttachmentAdmin(admin.ModelAdmin):
     list_display = ("id", "submission", "file")
     list_filter = ("submission",)
+
+
+@admin.register(Grade)
+class GradeAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "submission",
+        "grader",
+        "rhythm",
+        "tone",
+        "expression",
+    )
+    list_filter = ("submission", "grader")

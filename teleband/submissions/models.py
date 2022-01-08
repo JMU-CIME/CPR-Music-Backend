@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 from teleband.assignments.models import Assignment
 
@@ -24,3 +25,14 @@ class SubmissionAttachment(models.Model):
 
     def __str__(self):
         return f"{self.submission}: {self.file}"
+
+
+class Grade(models.Model):
+
+    submission = models.ForeignKey(Submission, on_delete=models.PROTECT)
+    grader = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name="grades", on_delete=models.PROTECT
+    )
+    rhythm = models.FloatField(null=True, blank=True)
+    tone = models.FloatField(null=True, blank=True)
+    expression = models.FloatField(null=True, blank=True)
