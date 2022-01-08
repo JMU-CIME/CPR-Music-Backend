@@ -15,9 +15,7 @@ def update_site_forward(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0001_initial'),
+        ("assignments", "0001_initial"),
     ]
 
-    operations = [
-        migrations.RunPython(update_site_forward, migrations.RunPython.noop)
-    ]
+    operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]
