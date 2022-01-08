@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+from teleband.courses.models import Course
 from teleband.instruments.models import Instrument
 from teleband.musics.models import PartTransposition
 
@@ -48,6 +49,7 @@ class Assignment(models.Model):
 
     activity = models.ForeignKey(Activity, on_delete=models.PROTECT)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    course = models.ForeignKey(Course, on_delete=models.PROTECT)
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
 
