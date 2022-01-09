@@ -7,14 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('courses', '0001_initial'),
-        ('assignments', '0003_seed_activity_types'),
+        ("courses", "0001_initial"),
+        ("assignments", "0003_seed_activity_types"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='assignment',
-            name='course',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='courses.course'),
+            model_name="assignment",
+            name="course",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="courses.course",
+            ),
         ),
     ]

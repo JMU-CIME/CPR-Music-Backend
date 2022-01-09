@@ -2,6 +2,7 @@
 
 from django.db import migrations
 
+
 def update_site_forward(apps, schema_editor):
     """Set site domain and name."""
     Transposition = apps.get_model("instruments", "Transposition")
@@ -31,11 +32,10 @@ def update_site_forward(apps, schema_editor):
     )
 
 
-
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('instruments', '0001_initial'),
+        ("instruments", "0001_initial"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

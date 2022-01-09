@@ -2,9 +2,10 @@
 
 from django.db import migrations
 
+
 def initial_instruments(apps, schema_editor):
     Transposition = apps.get_model("instruments", "Transposition")
-    transpositions = {elem.name:elem for elem in Transposition.objects.all()}
+    transpositions = {elem.name: elem for elem in Transposition.objects.all()}
     Instrument = apps.get_model("instruments", "Instrument")
     Instrument.objects.update_or_create(
         name="Viola",
@@ -131,7 +132,7 @@ def initial_instruments(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('instruments', '0002_data_migration_seed_transpositions'),
+        ("instruments", "0002_data_migration_seed_transpositions"),
     ]
 
     operations = [migrations.RunPython(initial_instruments, migrations.RunPython.noop)]

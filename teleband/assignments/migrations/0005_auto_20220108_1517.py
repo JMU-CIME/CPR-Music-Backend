@@ -12,7 +12,7 @@ def update_site_forward(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0004_assignment_course'),
+        ("assignments", "0004_assignment_course"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]
