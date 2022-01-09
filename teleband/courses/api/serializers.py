@@ -2,10 +2,12 @@ from rest_framework import serializers
 
 from teleband.courses.models import Course, Enrollment
 from teleband.instruments.api.serializers import InstrumentSerializer
-from teleband.users.api.serializers import RoleSerializer
+from teleband.users.api.serializers import RoleSerializer, UserSerializer
 
 
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
+    owner = UserSerializer()
+
     class Meta:
         model = Course
         fields = ["name", "owner", "url"]
