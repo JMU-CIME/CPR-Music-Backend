@@ -5,13 +5,18 @@ from teleband.instruments.api.serializers import InstrumentSerializer
 from teleband.users.api.serializers import RoleSerializer
 
 
-class CourseSerializer(serializers.ModelSerializer):
+class CourseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Course
-        fields = ["name", "slug"]
+        fields = ["name", "owner", "url"]
+
+        extra_kwargs = {
+            "url": {"view_name": "api:course-detail", "lookup_field": "slug"},
+            "owner": {"view_name": "api:user-detail", "lookup_field": "username"},
+        }
 
 
-class EnrollmentSerializer(serializers.ModelSerializer):
+class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):
     course = CourseSerializer()
     instrument = InstrumentSerializer()
     role = RoleSerializer()
@@ -19,3 +24,7 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enrollment
         fields = ["course", "instrument", "role"]
+
+        extra_kwargs = {
+            "course": {"view_name": "api:course-detail", "lookup_field": "slug"}
+        }
