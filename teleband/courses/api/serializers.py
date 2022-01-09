@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from teleband.courses.models import Course, Enrollment
 from teleband.instruments.api.serializers import InstrumentSerializer
-from teleband.users.api.serializers import RoleSerializer, UserSerializer
+from teleband.users.api.serializers import GenericNameSerializer, UserSerializer
 
 
 class CourseSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,7 +21,7 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
 class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):
     course = CourseSerializer()
     instrument = InstrumentSerializer()
-    role = RoleSerializer()
+    role = GenericNameSerializer()
 
     class Meta:
         model = Enrollment

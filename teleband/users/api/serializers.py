@@ -14,6 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
 
-class RoleSerializer(serializers.BaseSerializer):
+class GenericNameSerializer(serializers.BaseSerializer):
     def to_representation(self, instance):
         return instance.name

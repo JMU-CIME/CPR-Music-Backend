@@ -8,6 +8,8 @@ from rest_framework.viewsets import GenericViewSet
 from .serializers import EnrollmentSerializer, CourseSerializer
 
 from teleband.courses.models import Enrollment, Course
+from teleband.assignments.models import Assignment
+from teleband.assignments.api.serializers import AssignmentSerializer
 
 
 class EnrollmentViewSet(ListModelMixin, GenericViewSet):
@@ -23,3 +25,13 @@ class CourseViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_field = "slug"
+
+    @action(detail=True)
+    def assignments(self, request, **kwargs):
+        queryset = Assignment.objects.filter(
+            user=request.user, course=self.get_object()
+        )
+        serializer = AssignmentSerializer(
+            queryset, many=True, context={"request": request}
+        )
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
