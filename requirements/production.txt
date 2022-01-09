@@ -2,11 +2,17 @@
 
 -r base.txt
 
+wheel
 gunicorn==20.1.0  # https://github.com/benoitc/gunicorn
-psycopg2==2.9.3  # https://github.com/psycopg/psycopg2
+psycopg2-binary==2.9.3  # https://github.com/psycopg/psycopg2
 Collectfast==2.2.0  # https://github.com/antonagestam/collectfast
 
 # Django
 # ------------------------------------------------------------------------------
 django-storages[boto3]==1.12.3  # https://github.com/jschneier/django-storages
 django-anymail[amazon_ses]==8.4  # https://github.com/anymail/django-anymail
+
+
+uvicorn==0.16.0
+httptools==0.3.0
+uvloop==0.16.0
