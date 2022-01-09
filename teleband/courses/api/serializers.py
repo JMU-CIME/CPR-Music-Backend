@@ -4,6 +4,7 @@ from teleband.courses.models import Course, Enrollment
 from teleband.instruments.api.serializers import InstrumentSerializer
 from teleband.users.api.serializers import RoleSerializer
 
+
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
@@ -18,4 +19,3 @@ class EnrollmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Enrollment
         fields = ["course", "instrument", "role"]
-

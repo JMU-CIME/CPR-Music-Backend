@@ -15,7 +15,5 @@ class EnrollmentViewSet(ListModelMixin, GenericViewSet):
     queryset = Enrollment.objects.all()
 
     def get_queryset(self, *args, **kwargs):
-        print("Doing a queryset")
-        print(self.request.user)
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(user=self.request.user)
