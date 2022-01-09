@@ -18,7 +18,7 @@ class EnsembleType(models.Model):
 class Composer(models.Model):
 
     name = models.CharField(max_length=255)
-    url = models.URLField()
+    url = models.URLField(blank=True)
 
     def __str__(self):
         return self.name
@@ -57,4 +57,4 @@ class PartTransposition(models.Model):
         verbose_name_plural = "Part Transpositions"
 
     def __str__(self):
-        return f"{self.part} ({self.transposition})"
+        return f"{self.part.piece}: {self.part} [{self.transposition}]"
