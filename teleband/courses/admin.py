@@ -9,6 +9,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_filter = ("owner",)
     raw_id_fields = ("users",)
     search_fields = ("name",)
+    readonly_fields = ("slug",)
 
 
 @admin.register(Enrollment)
