@@ -5,7 +5,7 @@ from .models import Course, Enrollment
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "owner")
+    list_display = ("id", "name", "slug", "owner")
     list_filter = ("owner",)
     raw_id_fields = ("users",)
     search_fields = ("name",)

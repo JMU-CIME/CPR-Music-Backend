@@ -21,7 +21,7 @@ class EnrollmentViewSet(ListModelMixin, GenericViewSet):
         return self.queryset.filter(user=self.request.user)
 
 
-class CourseViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
+class CourseViewSet(RetrieveModelMixin, GenericViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_field = "slug"

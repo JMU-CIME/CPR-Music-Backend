@@ -36,3 +36,4 @@ class Grade(models.Model):
     rhythm = models.FloatField(null=True, blank=True)
     tone = models.FloatField(null=True, blank=True)
     expression = models.FloatField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)

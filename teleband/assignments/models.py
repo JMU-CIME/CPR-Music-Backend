@@ -53,5 +53,7 @@ class Assignment(models.Model):
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return f"[{self.user.username}] {self.activity}"
