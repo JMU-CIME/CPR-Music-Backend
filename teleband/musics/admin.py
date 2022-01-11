@@ -1,22 +1,23 @@
 from django.contrib import admin
+from reversion.admin import VersionAdmin
 
 from .models import EnsembleType, Composer, Piece, Part, PartTransposition
 
 
 @admin.register(EnsembleType)
-class EnsembleTypeAdmin(admin.ModelAdmin):
+class EnsembleTypeAdmin(VersionAdmin):
     list_display = ("id", "name")
     search_fields = ("name",)
 
 
 @admin.register(Composer)
-class ComposerAdmin(admin.ModelAdmin):
+class ComposerAdmin(VersionAdmin):
     list_display = ("id", "name", "url")
     search_fields = ("name",)
 
 
 @admin.register(Piece)
-class PieceAdmin(admin.ModelAdmin):
+class PieceAdmin(VersionAdmin):
     list_display = (
         "id",
         "name",
@@ -31,13 +32,13 @@ class PieceAdmin(admin.ModelAdmin):
 
 
 @admin.register(Part)
-class PartAdmin(admin.ModelAdmin):
+class PartAdmin(VersionAdmin):
     list_display = ("id", "name", "piece")
     list_filter = ("piece",)
     search_fields = ("name",)
 
 
 @admin.register(PartTransposition)
-class PartTranspositionAdmin(admin.ModelAdmin):
+class PartTranspositionAdmin(VersionAdmin):
     list_display = ("id", "part", "transposition", "notation")
     list_filter = ("part", "transposition")

@@ -13,6 +13,5 @@ django-storages[boto3]==1.12.3  # https://github.com/jschneier/django-storages
 django-anymail[amazon_ses]==8.4  # https://github.com/anymail/django-anymail
 
 
-uvicorn==0.16.0
 httptools==0.3.0
 uvloop==0.16.0
