@@ -17,7 +17,7 @@ class Submission(models.Model):
 class SubmissionAttachment(models.Model):
 
     submission = models.ForeignKey(Submission, on_delete=models.PROTECT)
-    file = models.URLField()
+    file = models.FileField()
 
     class Meta:
         verbose_name = "Submission Attachment"

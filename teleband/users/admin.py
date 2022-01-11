@@ -3,6 +3,8 @@ from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
 
+from reversion.admin import VersionAdmin
+
 from teleband.users.forms import UserChangeForm, UserCreationForm
 from teleband.users.models import Role
 
@@ -36,6 +38,6 @@ class UserAdmin(auth_admin.UserAdmin):
 
 
 @admin.register(Role)
-class RoleAdmin(admin.ModelAdmin):
+class RoleAdmin(VersionAdmin):
     list_display = ("id", "name")
     search_fields = ("name",)
