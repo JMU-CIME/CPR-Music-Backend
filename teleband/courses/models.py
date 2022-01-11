@@ -30,6 +30,8 @@ class Course(models.Model):
         settings.AUTH_USER_MODEL, related_name="courses", on_delete=models.PROTECT
     )
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Enrollment")
+    start_date = models.DateField()
+    end_date = models.DateField()
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -45,7 +47,7 @@ class Enrollment(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
+    instrument = models.ForeignKey(Instrument, null=True, on_delete=models.PROTECT)
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
 
     def __str__(self):
