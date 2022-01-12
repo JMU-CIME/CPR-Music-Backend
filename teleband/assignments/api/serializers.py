@@ -21,8 +21,8 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Assignment
-        # fields = ["activity", "deadline", "instrument", "url"]
-        fields = ["activity", "deadline", "instrument", "id", "url"]
+        # fields = ["activity", "deadline", "instrument", "id", "url"]
+        fields = ["activity", "deadline", "instrument", "id"]
 
         extra_kwargs = {
             "url": {"view_name": "api:assignment-detail", "lookup_field": "id"},

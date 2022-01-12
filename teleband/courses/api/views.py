@@ -31,12 +31,3 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
             return CourseRelatedSerializer
         return self.serializer_class
 
-    @action(detail=True)
-    def assignments(self, request, **kwargs):
-        queryset = Assignment.objects.filter(
-            user=request.user, course=self.get_object()
-        )
-        serializer = AssignmentSerializer(
-            queryset, many=True, context={"request": request}
-        )
-        return Response(status=status.HTTP_200_OK, data=serializer.data)
