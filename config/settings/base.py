@@ -292,7 +292,4 @@ REST_FRAMEWORK = {
 CORS_URLS_REGEX = r"^/api/.*$"
 # Your stuff...
 # CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^http://localhost:3000$",  # works for local dev
-]
 # ------------------------------------------------------------------------------
