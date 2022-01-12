@@ -5,17 +5,20 @@ from teleband.instruments.api.serializers import InstrumentSerializer
 from teleband.users.api.serializers import GenericNameSerializer, UserSerializer
 
 
-class CourseSerializer(serializers.HyperlinkedModelSerializer):
-    owner = UserSerializer()
+class CourseRelatedSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["name", "owner", "url"]
+        fields = ["name", "owner", "start_date", "end_date", "url"]
 
         extra_kwargs = {
             "url": {"view_name": "api:course-detail", "lookup_field": "slug"},
             "owner": {"view_name": "api:user-detail", "lookup_field": "username"},
         }
+
+
+class CourseSerializer(CourseRelatedSerializer):
+    owner = UserSerializer()
 
 
 class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):

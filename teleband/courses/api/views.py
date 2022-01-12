@@ -1,11 +1,11 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import EnrollmentSerializer, CourseSerializer
+from .serializers import EnrollmentSerializer, CourseSerializer, CourseRelatedSerializer
 
 from teleband.courses.models import Enrollment, Course
 from teleband.assignments.models import Assignment
@@ -21,10 +21,15 @@ class EnrollmentViewSet(ListModelMixin, GenericViewSet):
         return self.queryset.filter(user=self.request.user)
 
 
-class CourseViewSet(RetrieveModelMixin, GenericViewSet):
+class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_field = "slug"
+
+    def get_serializer_class(self):
+        if self.request.method == "POST":
+            return CourseRelatedSerializer
+        return self.serializer_class
 
     @action(detail=True)
     def assignments(self, request, **kwargs):
