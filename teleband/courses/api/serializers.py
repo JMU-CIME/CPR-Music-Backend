@@ -10,7 +10,7 @@ class CourseRelatedSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["name", "owner", "start_date", "end_date", "url"]
+        fields = ["id", "name", "owner", "start_date", "end_date", "url", "slug"]
 
         extra_kwargs = {
             "url": {"view_name": "api:course-detail", "lookup_field": "slug"},
@@ -30,7 +30,7 @@ class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Enrollment
-        fields = ["course", "instrument", "role"]
+        fields = ["id", "course", "instrument", "role"]
 
         extra_kwargs = {
             "course": {"view_name": "api:course-detail", "lookup_field": "slug"}

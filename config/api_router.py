@@ -23,9 +23,10 @@ router.register("courses", CourseViewSet)
 
 courses_router = nested_cls(router, "courses", lookup="course_slug")
 courses_router.register("assignments", AssignmentViewSet) #option basename omitted
+# courses_router.register("activities", ActivityViewSet) #option basename omitted
 
 app_name = "api"
 urlpatterns = router.urls
 urlpatterns += [
-    path("", include(courses_router.urls))
+    path("", include(courses_router.urls)),
 ]
