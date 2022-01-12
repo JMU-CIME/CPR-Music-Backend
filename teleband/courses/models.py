@@ -50,5 +50,8 @@ class Enrollment(models.Model):
     instrument = models.ForeignKey(Instrument, null=True, on_delete=models.PROTECT)
     role = models.ForeignKey(Role, on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = ["user", "course"]
+
     def __str__(self):
         return f"{self.user.username} -> {self.course.name}"
