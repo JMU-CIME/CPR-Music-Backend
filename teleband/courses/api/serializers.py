@@ -10,7 +10,7 @@ class CourseSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Course
-        fields = ["id", "name", "owner", "url"]
+        fields = ["id", "name", "owner", "url", "slug"]
 
         extra_kwargs = {
             "url": {"view_name": "api:course-detail", "lookup_field": "slug"},
