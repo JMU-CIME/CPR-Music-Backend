@@ -36,4 +36,7 @@ class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         if role.name == "Teacher":
             # TODO this can't be right, front end should probably hit /course/:slug/activities for this info
             # Possibly /course/:slug/assignments should actually give activity -> student for each student
-            return [a.activity for a in Assignment.objects.filter(course=course).distinct("activity")]
+            return [
+                a.activity
+                for a in Assignment.objects.filter(course=course).distinct("activity")
+            ]

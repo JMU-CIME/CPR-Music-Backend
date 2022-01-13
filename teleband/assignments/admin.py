@@ -25,5 +25,5 @@ class ActivityAdmin(VersionAdmin):
 
 @admin.register(Assignment)
 class AssignmentAdmin(VersionAdmin):
-    list_display = ("id", "course", "user", "activity", "deadline", "instrument")
-    list_filter = ("activity", "user", "deadline", "instrument")
+    list_display = ("id", "enrollment", "activity", "deadline", "instrument")
+    list_filter = ("activity", "deadline", "instrument")
