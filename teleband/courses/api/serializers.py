@@ -6,7 +6,6 @@ from teleband.users.api.serializers import GenericNameSerializer, UserSerializer
 
 
 class CourseRelatedSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Course
         fields = ["id", "name", "start_date", "end_date", "url", "slug"]

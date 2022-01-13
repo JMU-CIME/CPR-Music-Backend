@@ -16,8 +16,11 @@ class Submission(models.Model):
 
 class SubmissionAttachment(models.Model):
 
-    submission = models.ForeignKey(Submission, on_delete=models.PROTECT)
+    submission = models.ForeignKey(
+        Submission, related_name="attachments", on_delete=models.PROTECT
+    )
     file = models.FileField()
+    submitted = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Submission Attachment"
