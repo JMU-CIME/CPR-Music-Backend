@@ -7,8 +7,24 @@ from rest_framework.viewsets import GenericViewSet
 from .serializers import AssignmentSerializer
 from teleband.assignments.api.serializers import ActivitySerializer
 
-from teleband.assignments.models import Assignment
+from teleband.assignments.models import Assignment, Activity
 from teleband.courses.models import Course
+
+
+class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
+    serializer_class = ActivitySerializer
+    queryset = Activity.objects.all()
+    lookup_field = "id"
+    # permission_classes = [IsTeacher]
+
+    def get_queryset(self):
+        return self.queryset.filter(
+            pk__in=Assignment.objects.filter(
+                enrollment__course__slug=self.kwargs["course_slug_slug"]
+            )
+            .distinct("activity")
+            .values_list("pk", flat=True)
+        )
 
 
 class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
@@ -16,27 +32,13 @@ class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     queryset = Assignment.objects.all()
     lookup_field = "id"
 
-    def get_serializer_class(self):
-        course = Course.objects.get(slug=self.kwargs["course_slug_slug"])
-        role = self.request.user.enrollment_set.get(course=course).role
-        print("This user's role in this class is {}".format(role))
-
-        if role.name == "Teacher":
-            return ActivitySerializer
-        return AssignmentSerializer
-
-        return self.serializer_class
-
     def get_queryset(self):
         course = Course.objects.get(slug=self.kwargs["course_slug_slug"])
         role = self.request.user.enrollment_set.get(course=course).role
 
         if role.name == "Student":
-            return Assignment.objects.filter(enrollment__course=course, enrollment__user=self.request.user)
+            return Assignment.objects.filter(
+                enrollment__course=course, enrollment__user=self.request.user
+            )
         if role.name == "Teacher":
-            # TODO this can't be right, front end should probably hit /course/:slug/activities for this info
-            # Possibly /course/:slug/assignments should actually give activity -> student for each student
-            return [
-                a.activity
-                for a in Assignment.objects.filter(course=course).distinct("activity")
-            ]
+            return Assignment.objects.filter(enrollment__course=course)
