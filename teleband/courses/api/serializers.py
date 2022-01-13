@@ -6,21 +6,21 @@ from teleband.users.api.serializers import GenericNameSerializer, UserSerializer
 
 
 class CourseRelatedSerializer(serializers.HyperlinkedModelSerializer):
-    # assignments = serializers.HyperlinkedIdentityField(view_name="api:assignment-list")
 
     class Meta:
         model = Course
-        fields = ["id", "name", "owner", "start_date", "end_date", "url", "slug"]
+        fields = ["id", "name", "start_date", "end_date", "url", "slug"]
 
         extra_kwargs = {
             "url": {"view_name": "api:course-detail", "lookup_field": "slug"},
-            "owner": {"view_name": "api:user-detail", "lookup_field": "username"},
-            # "assignments": {"view_name": "api:assignment-list", "lookup_field": "slug"}
         }
 
 
 class CourseSerializer(CourseRelatedSerializer):
     owner = UserSerializer()
+
+    class Meta(CourseRelatedSerializer.Meta):
+        fields = CourseRelatedSerializer.Meta.fields + ["owner"]
 
 
 class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):

@@ -31,3 +31,5 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
             return CourseRelatedSerializer
         return self.serializer_class
 
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
