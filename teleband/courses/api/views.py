@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -12,7 +12,7 @@ from teleband.assignments.models import Assignment
 from teleband.assignments.api.serializers import AssignmentSerializer
 
 
-class EnrollmentViewSet(ListModelMixin, GenericViewSet):
+class EnrollmentViewSet(ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
     serializer_class = EnrollmentSerializer
     queryset = Enrollment.objects.all()
 
