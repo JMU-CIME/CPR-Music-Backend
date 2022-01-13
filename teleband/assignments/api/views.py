@@ -32,7 +32,7 @@ class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         role = self.request.user.enrollment_set.get(course=course).role
 
         if role.name == "Student":
-            return Assignment.objects.filter(course=course, user=self.request.user)
+            return Assignment.objects.filter(enrollment__course=course, enrollment__user=self.request.user)
         if role.name == "Teacher":
             # TODO this can't be right, front end should probably hit /course/:slug/activities for this info
             # Possibly /course/:slug/assignments should actually give activity -> student for each student
