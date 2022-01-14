@@ -1,11 +1,17 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import EnsembleType, Composer, Piece, Part, PartTransposition
+from .models import EnsembleType, Composer, Piece, Part, PartTransposition, PartType
 
 
 @admin.register(EnsembleType)
 class EnsembleTypeAdmin(VersionAdmin):
+    list_display = ("id", "name")
+    search_fields = ("name",)
+
+
+@admin.register(PartType)
+class PartTypeAdmin(VersionAdmin):
     list_display = ("id", "name")
     search_fields = ("name",)
 
