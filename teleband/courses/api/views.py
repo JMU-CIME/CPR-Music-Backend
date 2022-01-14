@@ -8,11 +8,17 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     CreateModelMixin,
     DestroyModelMixin,
+    UpdateModelMixin,
 )
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import EnrollmentSerializer, CourseSerializer, CourseRelatedSerializer
+from .serializers import (
+    EnrollmentSerializer,
+    CourseSerializer,
+    CourseRelatedSerializer,
+    EnrollmentInstrumentSerializer,
+)
 from teleband.assignments.api.serializers import AssignmentSerializer
 
 from teleband.courses.models import Enrollment, Course
@@ -24,7 +30,11 @@ logger = logging.getLogger(__name__)
 
 
 class EnrollmentViewSet(
-    ListModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet
+    ListModelMixin,
+    RetrieveModelMixin,
+    UpdateModelMixin,
+    DestroyModelMixin,
+    GenericViewSet,
 ):
     serializer_class = EnrollmentSerializer
     queryset = Enrollment.objects.all()
@@ -32,6 +42,11 @@ class EnrollmentViewSet(
     def get_queryset(self, *args, **kwargs):
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(user=self.request.user)
+
+    def get_serializer_class(self):
+        if self.action == "update" or self.action == "partial_update":
+            return EnrollmentInstrumentSerializer
+        return self.serializer_class
 
 
 class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):

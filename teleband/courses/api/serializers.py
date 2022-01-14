@@ -22,6 +22,12 @@ class CourseSerializer(CourseRelatedSerializer):
         fields = CourseRelatedSerializer.Meta.fields + ["owner"]
 
 
+class EnrollmentInstrumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Enrollment
+        fields = ["id", "instrument"]
+
+
 class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):
     course = CourseSerializer()
     instrument = InstrumentSerializer()
