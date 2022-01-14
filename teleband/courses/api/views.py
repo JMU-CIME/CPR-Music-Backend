@@ -42,12 +42,14 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-
     # permission_class = IsTeacher
     @action(detail=True)
     def assign(self, request, **kwargs):
         if "piece_id" not in request.GET:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Missing piece_id in GET data"})
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Missing piece_id in GET data"},
+            )
 
         # piece = Piece.objects.get(pk=request.GET["piece_id"])
         # print("Assign activities for this piece {}".format(piece))
@@ -55,4 +57,3 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
         # piece.activity_set
 
         return Response(status=status.HTTP_200_OK)
-

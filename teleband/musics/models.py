@@ -37,9 +37,18 @@ class Piece(models.Model):
         return self.name
 
 
+class PartType(models.Model):
+
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
 class Part(models.Model):
 
     name = models.CharField(max_length=255)
+    part_type = models.ForeignKey(PartType, on_delete=models.PROTECT)
     piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
 
     def __str__(self):

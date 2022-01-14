@@ -3,7 +3,7 @@ from django.conf import settings
 
 from teleband.courses.models import Course, Enrollment
 from teleband.instruments.models import Instrument
-from teleband.musics.models import PartTransposition
+from teleband.musics.models import PartType, Part
 
 
 class ActivityCategory(models.Model):
@@ -34,7 +34,7 @@ class ActivityType(models.Model):
 class Activity(models.Model):
 
     activity_type = models.ForeignKey(ActivityType, on_delete=models.PROTECT)
-    part = models.ForeignKey(PartTransposition, on_delete=models.PROTECT)
+    part_type = models.ForeignKey(PartType, on_delete=models.PROTECT)
     body = models.TextField()
 
     class Meta:
@@ -49,6 +49,7 @@ class Assignment(models.Model):
 
     activity = models.ForeignKey(Activity, on_delete=models.PROTECT)
     enrollment = models.ForeignKey(Enrollment, on_delete=models.PROTECT)
+    part = models.ForeignKey(Part, on_delete=models.PROTECT)
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
 
