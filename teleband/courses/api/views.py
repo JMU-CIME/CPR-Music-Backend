@@ -18,6 +18,7 @@ from teleband.assignments.api.serializers import AssignmentSerializer
 from teleband.courses.models import Enrollment, Course
 from teleband.assignments.models import Assignment, Activity
 from teleband.musics.models import Piece, Part
+from teleband.utils.permissions import IsTeacher
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_field = "slug"
+    permission_classes = [IsTeacher]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -46,7 +48,14 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
-    # permission_class = IsTeacher
+    @action(detail=True)
+    def roster(self, request, **kwargs):
+        course_enrollments = Enrollment.objects.filter(course=self.get_object())
+        serializer = EnrollmentSerializer(
+            course_enrollments, many=True, context={"request": request}
+        )
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
     @action(detail=True)
     def assign(self, request, **kwargs):
         if "piece_id" not in request.POST:
@@ -58,7 +67,11 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
         try:
             piece = Piece.objects.get(pk=request.POST["piece_id"])
         except Piece.DoesNotExist:
-            logger.info("Attempt to assign non-existent piece {}".format(request.POST["piece_id"]))
+            logger.info(
+                "Attempt to assign non-existent piece {}".format(
+                    request.POST["piece_id"]
+                )
+            )
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         course = self.get_object()
@@ -66,17 +79,18 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
         assignments = []
         for activity in Activity.objects.all():
             # Get this piece’s part for this kind of activity
-            part = Part.objects.get(
-                piece=piece,
-                part_type=activity.part_type
-            )
+            part = Part.objects.get(piece=piece, part_type=activity.part_type)
             for e in Enrollment.objects.filter(course=course, role__name="Student"):
-                assignments.append(Assignment.objects.create(
-                    activity=activity,
-                    enrollment=e,
-                    instrument=e.instrument,
-                    part=part
-                ))
+                assignments.append(
+                    Assignment.objects.create(
+                        activity=activity,
+                        enrollment=e,
+                        instrument=e.instrument,
+                        part=part,
+                    )
+                )
 
-        serializer = AssignmentSerializer(assignments, many=True, context={"request": request})
+        serializer = AssignmentSerializer(
+            assignments, many=True, context={"request": request}
+        )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
