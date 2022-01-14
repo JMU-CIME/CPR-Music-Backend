@@ -12,7 +12,6 @@ class IsTeacher(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        print("Are we doing this object permission thing")
         try:
             e = Enrollment.objects.get(
                 course__slug=view.kwargs["course_slug_slug"],
