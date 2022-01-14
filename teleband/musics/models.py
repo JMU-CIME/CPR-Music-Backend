@@ -27,7 +27,7 @@ class Composer(models.Model):
 class Piece(models.Model):
 
     name = models.CharField(max_length=255)
-    composer = models.ForeignKey(Composer, on_delete=models.PROTECT)
+    composer = models.ForeignKey(Composer, null=True, on_delete=models.PROTECT)
     video = models.URLField(blank=True)
     audio = models.URLField(blank=True)
     date_composed = models.DateField(null=True, blank=True)
@@ -49,7 +49,7 @@ class Part(models.Model):
 
     name = models.CharField(max_length=255)
     part_type = models.ForeignKey(PartType, on_delete=models.PROTECT)
-    piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
+    piece = models.ForeignKey(Piece, related_name="parts", on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
@@ -61,7 +61,7 @@ class PartTransposition(models.Model):
         Part, related_name="transpositions", on_delete=models.PROTECT
     )
     transposition = models.ForeignKey(Transposition, on_delete=models.PROTECT)
-    notation = models.URLField()
+    flatio = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Part Transposition"
