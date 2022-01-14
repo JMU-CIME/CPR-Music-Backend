@@ -6,6 +6,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from .serializers import AssignmentSerializer
 from teleband.assignments.api.serializers import ActivitySerializer
+from teleband.musics.api.serializers import PartTranspositionSerializer
 
 from teleband.assignments.models import Assignment, Activity
 from teleband.courses.models import Course
@@ -33,12 +34,16 @@ class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     queryset = Assignment.objects.all()
     lookup_field = "id"
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
+    @action(detail=True)
+    def notation(self, request, *args, **kwargs):
+        course = Course.objects.get(slug=self.kwargs["course_slug_slug"])
+        assignment = self.get_object()
 
-        kwargs.setdefault('context', self.get_serializer_context())
-        serializer = NotationAssignmentSerializer(instance, *args, **kwargs)
+        part_transposition = assignment.part.transpositions.get(
+            transposition=assignment.instrument.transposition
+        )
 
+        serializer = PartTranspositionSerializer(part_transposition, context=self.get_serializer_context())
         return Response(serializer.data)
 
     def get_queryset(self):
