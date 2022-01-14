@@ -1,7 +1,9 @@
+import logging
 from rest_framework import permissions
 
 from teleband.courses.models import Enrollment
 
+logger = logging.getLogger(__name__)
 
 class IsTeacher(permissions.BasePermission):
     """

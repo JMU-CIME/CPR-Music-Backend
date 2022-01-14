@@ -135,7 +135,7 @@ LOGGING = {
     "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
+            "format": "%(levelname)s %(asctime)s %(name)s "
             "%(process)d %(thread)d %(message)s"
         }
     },

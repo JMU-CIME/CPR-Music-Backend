@@ -248,7 +248,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
+            "format": "%(levelname)s %(asctime)s %(name)s "
             "%(process)d %(thread)d %(message)s"
         }
     },
