@@ -7,9 +7,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from .serializers import (
     SubmissionSerializer,
-    SubmissionCreateSerializer,
     AttachmentSerializer,
-    AttachmentCreateSerializer,
 )
 
 from teleband.courses.models import Course
@@ -23,13 +21,7 @@ class SubmissionViewSet(
     serializer_class = SubmissionSerializer
     queryset = Submission.objects.all()
 
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return SubmissionCreateSerializer
-        return self.serializer_class
-
     def get_queryset(self):
-        print("SubmissionViewSet kwargs {}".format(self.kwargs))
         return self.queryset.filter(assignment_id=self.kwargs["assignment_id"])
 
     def perform_create(self, serializer):
@@ -44,13 +36,7 @@ class AttachmentViewSet(
     serializer_class = AttachmentSerializer
     queryset = SubmissionAttachment.objects.all()
 
-    def get_serializer_class(self):
-        if self.request.method == "POST":
-            return AttachmentCreateSerializer
-        return self.serializer_class
-
     def get_queryset(self):
-        print("AttachmentViewSet kwargs {}".format(self.kwargs))
         return self.queryset.filter(submission_id=self.kwargs["submission_pk"])
 
     def perform_create(self, serializer):
