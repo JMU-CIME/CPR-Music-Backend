@@ -5,7 +5,6 @@ from teleband.assignments.api.serializers import AssignmentSerializer
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Submission
         fields = ["id", "submitted", "content"]
@@ -16,7 +15,6 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = SubmissionAttachment
         fields = ["id", "file", "submitted"]

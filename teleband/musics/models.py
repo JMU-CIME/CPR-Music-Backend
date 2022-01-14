@@ -57,7 +57,9 @@ class Part(models.Model):
 
 class PartTransposition(models.Model):
 
-    part = models.ForeignKey(Part, related_name="transpositions", on_delete=models.PROTECT)
+    part = models.ForeignKey(
+        Part, related_name="transpositions", on_delete=models.PROTECT
+    )
     transposition = models.ForeignKey(Transposition, on_delete=models.PROTECT)
     notation = models.URLField()
 
