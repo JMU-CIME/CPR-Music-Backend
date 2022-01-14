@@ -43,7 +43,9 @@ class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             transposition=assignment.instrument.transposition
         )
 
-        serializer = PartTranspositionSerializer(part_transposition, context=self.get_serializer_context())
+        serializer = PartTranspositionSerializer(
+            part_transposition, context=self.get_serializer_context()
+        )
         return Response(serializer.data)
 
     def get_queryset(self):
