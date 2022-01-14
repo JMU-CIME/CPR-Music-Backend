@@ -50,9 +50,6 @@ INTERNAL_IPS = ["127.0.0.1", "10.0.2.2"]
 # https://django-extensions.readthedocs.io/en/latest/installation_instructions.html#configuration
 INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^http://localhost:3000$",  # works for local dev
-]
 # Your stuff...
 # ------------------------------------------------------------------------------
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
