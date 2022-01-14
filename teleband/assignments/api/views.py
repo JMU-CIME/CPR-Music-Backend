@@ -9,13 +9,14 @@ from teleband.assignments.api.serializers import ActivitySerializer
 
 from teleband.assignments.models import Assignment, Activity
 from teleband.courses.models import Course
+from teleband.utils.permissions import IsTeacher
 
 
 class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     serializer_class = ActivitySerializer
     queryset = Activity.objects.all()
     lookup_field = "id"
-    # permission_classes = [IsTeacher]
+    permission_classes = [IsTeacher]
 
     def get_queryset(self):
         return self.queryset.filter(

@@ -48,7 +48,7 @@ class Activity(models.Model):
 class Assignment(models.Model):
 
     activity = models.ForeignKey(Activity, on_delete=models.PROTECT)
-    enrollment = models.ForeignKey(Enrollment, null=True, on_delete=models.PROTECT)
+    enrollment = models.ForeignKey(Enrollment, on_delete=models.PROTECT)
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
 
