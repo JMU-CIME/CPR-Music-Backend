@@ -42,7 +42,7 @@ class Activity(models.Model):
         verbose_name_plural = "Activities"
 
     def __str__(self):
-        return f"{self.activity_type}: {self.part}"
+        return f"{self.activity_type}: {self.part_type}"
 
 
 class Assignment(models.Model):
@@ -56,4 +56,4 @@ class Assignment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"[{self.user.username}] {self.activity}"
+        return f"[{self.enrollment.user.username}] {self.activity}"

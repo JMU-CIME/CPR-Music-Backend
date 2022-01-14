@@ -33,6 +33,14 @@ class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
     queryset = Assignment.objects.all()
     lookup_field = "id"
 
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        kwargs.setdefault('context', self.get_serializer_context())
+        serializer = NotationAssignmentSerializer(instance, *args, **kwargs)
+
+        return Response(serializer.data)
+
     def get_queryset(self):
         course = Course.objects.get(slug=self.kwargs["course_slug_slug"])
         role = self.request.user.enrollment_set.get(course=course).role
