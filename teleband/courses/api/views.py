@@ -30,22 +30,22 @@ from teleband.utils.permissions import IsTeacher
 
 logger = logging.getLogger(__name__)
 
+
 class IsTeacherEnrollment(permissions.BasePermission):
     def has_permission(self, request, view):
         if view.action not in ["update", "partial_update", "destroy"]:
             return True
         try:
             print("The get object {}".format(view.get_object()))
-            e = Enrollment.objects.get(user=request.user, course=view.get_object().course)
+            e = Enrollment.objects.get(
+                user=request.user, course=view.get_object().course
+            )
             return e.role.name == "Teacher"
         except Enrollment.DoesNotExist:
             logger.info(
-                "No Enrollment for {} in {}".format(
-                    request.user, view.get_object()
-                )
+                "No Enrollment for {} in {}".format(request.user, view.get_object())
             )
         return False
-
 
 
 class EnrollmentViewSet(
@@ -59,10 +59,14 @@ class EnrollmentViewSet(
     queryset = Enrollment.objects.all()
     permission_classes = [IsTeacherEnrollment]
 
-
     def get_queryset(self, *args, **kwargs):
         if self.action in ["update", "partial_update", "destroy"]:
-            courses = [e.course for e in Enrollment.objects.filter(user=self.request.user, role__name="Teacher")]
+            courses = [
+                e.course
+                for e in Enrollment.objects.filter(
+                    user=self.request.user, role__name="Teacher"
+                )
+            ]
             return self.queryset.filter(course__in=courses)
 
         return self.queryset.filter(user=self.request.user)
@@ -82,9 +86,7 @@ class CoursePermission(permissions.BasePermission):
             return e.role.name == "Teacher"
         except Enrollment.DoesNotExist:
             logger.info(
-                "No Enrollment for {} in {}".format(
-                    request.user, view.get_object()
-                )
+                "No Enrollment for {} in {}".format(request.user, view.get_object())
             )
         return False
 

@@ -1,10 +1,12 @@
 from django.contrib.auth import get_user_model
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 
 from .serializers import UserSerializer
@@ -27,14 +29,22 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
-# class ObtainDeleteAuthToken(ObtainAuthToken):
-#     permission_classes = [IsAuthForDelete]
+class IsAuthForDelete(permissions.IsAuthenticated):
+    def has_permission(self, request, view):
+        if request.method == "DELETE":
+            return super().has_permission(request, view)
+        return True
 
-#     def delete(self, request, *args, **kwargs):
-#         try:
-#             Token.objects.get(key=request.data).delete()
-#             return Response(status=status.HTTP_200_OK)
-#         except Token.DoesNotExist:
-#             logger.info("idk y'all")
-#             return Response(status=status.HTTP_404_NOT_FOUND)
 
+class ObtainDeleteAuthToken(ObtainAuthToken):
+    permission_classes = [IsAuthForDelete]
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            Token.objects.get(user=request.user).delete()
+            return Response(status=status.HTTP_200_OK)
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+obtain_delete_auth_token = ObtainDeleteAuthToken.as_view()
