@@ -13,4 +13,4 @@ class InstrumentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Instrument
-        fields = ["name", "transposition"]
+        fields = ["id", "name", "transposition"]

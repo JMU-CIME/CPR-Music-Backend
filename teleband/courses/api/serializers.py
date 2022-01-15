@@ -40,3 +40,13 @@ class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             "course": {"view_name": "api:course-detail", "lookup_field": "slug"}
         }
+
+
+class RosterSerializer(serializers.HyperlinkedModelSerializer):
+    user = UserSerializer()
+    instrument = InstrumentSerializer()
+    role = GenericNameSerializer()
+
+    class Meta:
+        model = Enrollment
+        fields = ["id", "user", "instrument", "role"]

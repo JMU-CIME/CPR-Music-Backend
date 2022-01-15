@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth import get_user_model
+from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import (
@@ -18,6 +19,7 @@ from .serializers import (
     CourseSerializer,
     CourseRelatedSerializer,
     EnrollmentInstrumentSerializer,
+    RosterSerializer,
 )
 from teleband.assignments.api.serializers import AssignmentSerializer
 
@@ -27,6 +29,23 @@ from teleband.musics.models import Piece, Part
 from teleband.utils.permissions import IsTeacher
 
 logger = logging.getLogger(__name__)
+
+class IsTeacherEnrollment(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if view.action not in ["update", "partial_update", "destroy"]:
+            return True
+        try:
+            print("The get object {}".format(view.get_object()))
+            e = Enrollment.objects.get(user=request.user, course=view.get_object().course)
+            return e.role.name == "Teacher"
+        except Enrollment.DoesNotExist:
+            logger.info(
+                "No Enrollment for {} in {}".format(
+                    request.user, view.get_object()
+                )
+            )
+        return False
+
 
 
 class EnrollmentViewSet(
@@ -38,9 +57,14 @@ class EnrollmentViewSet(
 ):
     serializer_class = EnrollmentSerializer
     queryset = Enrollment.objects.all()
+    permission_classes = [IsTeacherEnrollment]
+
 
     def get_queryset(self, *args, **kwargs):
-        assert isinstance(self.request.user.id, int)
+        if self.action in ["update", "partial_update", "destroy"]:
+            courses = [e.course for e in Enrollment.objects.filter(user=self.request.user, role__name="Teacher")]
+            return self.queryset.filter(course__in=courses)
+
         return self.queryset.filter(user=self.request.user)
 
     def get_serializer_class(self):
@@ -49,11 +73,27 @@ class EnrollmentViewSet(
         return self.serializer_class
 
 
+class CoursePermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if view.action == "retrieve":
+            return True
+        try:
+            e = Enrollment.objects.get(user=request.user, course=view.get_object())
+            return e.role.name == "Teacher"
+        except Enrollment.DoesNotExist:
+            logger.info(
+                "No Enrollment for {} in {}".format(
+                    request.user, view.get_object()
+                )
+            )
+        return False
+
+
 class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_field = "slug"
-    permission_classes = [IsTeacher]
+    permission_classes = [CoursePermission]
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -66,7 +106,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     @action(detail=True)
     def roster(self, request, **kwargs):
         course_enrollments = Enrollment.objects.filter(course=self.get_object())
-        serializer = EnrollmentSerializer(
+        serializer = RosterSerializer(
             course_enrollments, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)

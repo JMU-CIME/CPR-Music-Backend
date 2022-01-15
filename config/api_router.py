@@ -9,6 +9,7 @@ from teleband.courses.api.views import EnrollmentViewSet, CourseViewSet
 from teleband.assignments.api.views import AssignmentViewSet, ActivityViewSet
 from teleband.submissions.api.views import SubmissionViewSet, AttachmentViewSet
 from teleband.musics.api.views import PieceViewSet
+from teleband.instruments.api.views import InstrumentViewSet
 
 if settings.DEBUG:
     router = DefaultRouter()
@@ -21,6 +22,7 @@ router.register("users", UserViewSet)
 router.register("enrollments", EnrollmentViewSet)
 router.register("courses", CourseViewSet)
 router.register("pieces", PieceViewSet)
+router.register("instruments", InstrumentViewSet)
 
 courses_router = nested_cls(router, "courses", lookup="course_slug")
 courses_router.register("assignments", AssignmentViewSet)  # option basename omitted

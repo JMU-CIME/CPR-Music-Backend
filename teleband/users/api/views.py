@@ -27,7 +27,7 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
 
-# class ObtainDeleteAuthToken(ObtainAuthToken)
+# class ObtainDeleteAuthToken(ObtainAuthToken):
 #     permission_classes = [IsAuthForDelete]
 
 #     def delete(self, request, *args, **kwargs):
@@ -37,3 +37,4 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
 #         except Token.DoesNotExist:
 #             logger.info("idk y'all")
 #             return Response(status=status.HTTP_404_NOT_FOUND)
+

@@ -17,12 +17,12 @@ class IsTeacher(permissions.BasePermission):
 
     def has_permission(self, request, view):
         try:
-            if "course_slug_slug" in view.kwargs:
-                e = Enrollment.objects.get(
-                    course__slug=view.kwargs["course_slug_slug"], user=request.user
-                )
-            else:
-                e = Enrollment.objects.get(course=view.get_object(), user=request.user)
+            # if "course_slug_slug" in view.kwargs:
+            e = Enrollment.objects.get(
+                course__slug=view.kwargs["course_slug_slug"], user=request.user
+            )
+            # else:
+            #     e = Enrollment.objects.get(course=view.get_object(), user=request.user)
             return e.role.name == "Teacher"
         except Enrollment.DoesNotExist:
             logger.info(
