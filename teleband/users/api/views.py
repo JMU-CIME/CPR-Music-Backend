@@ -5,6 +5,8 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from rest_framework.authtoken.views import ObtainAuthToken
+
 from .serializers import UserSerializer
 
 User = get_user_model()
@@ -23,3 +25,15 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
     def me(self, request):
         serializer = UserSerializer(request.user, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+# class ObtainDeleteAuthToken(ObtainAuthToken)
+#     permission_classes = [IsAuthForDelete]
+
+#     def delete(self, request, *args, **kwargs):
+#         try:
+#             Token.objects.get(key=request.data).delete()
+#             return Response(status=status.HTTP_200_OK)
+#         except Token.DoesNotExist:
+#             logger.info("idk y'all")
+#             return Response(status=status.HTTP_404_NOT_FOUND)
