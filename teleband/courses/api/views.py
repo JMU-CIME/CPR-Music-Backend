@@ -71,7 +71,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
-    @action(detail=True)
+    @action(detail=True, methods=['post'])
     def assign(self, request, **kwargs):
         if "piece_id" not in request.POST:
             return Response(
