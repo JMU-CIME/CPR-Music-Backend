@@ -30,6 +30,12 @@ class AssignmentSerializer(serializers.ModelSerializer):
         }
 
 
+class AssignmentInstrumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Assignment
+        fields = ["id", "instrument"]
+
+
 class NotationAssignmentSerializer(serializers.ModelSerializer):
     activity = ActivitySerializer()
     instrument = InstrumentSerializer()

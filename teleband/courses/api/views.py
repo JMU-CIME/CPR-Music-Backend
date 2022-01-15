@@ -56,7 +56,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
     permission_classes = [IsTeacher]
 
     def get_serializer_class(self):
-        if self.request.method == "POST":
+        if self.action == "create":
             return CourseRelatedSerializer
         return self.serializer_class
 

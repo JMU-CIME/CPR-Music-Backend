@@ -1,16 +1,24 @@
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import AssignmentSerializer
+from .serializers import AssignmentSerializer, AssignmentInstrumentSerializer
 from teleband.assignments.api.serializers import ActivitySerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer
 
 from teleband.assignments.models import Assignment, Activity
 from teleband.courses.models import Course
 from teleband.utils.permissions import IsTeacher
+
+
+class TeacherUpdate(IsTeacher):
+    def has_permission(self, request, view):
+        if view.action not in ["update", "partial_update"]:
+            return True
+
+        return super().has_permission(request, view)
 
 
 class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
@@ -29,10 +37,18 @@ class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
         )
 
 
-class AssignmentViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
+class AssignmentViewSet(
+    RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet
+):
     serializer_class = AssignmentSerializer
     queryset = Assignment.objects.all()
     lookup_field = "id"
+    permission_classes = [TeacherUpdate]
+
+    def get_serializer_class(self):
+        if self.action in ["update", "partial_update"]:
+            return AssignmentInstrumentSerializer
+        return self.serializer_class
 
     @action(detail=True)
     def notation(self, request, *args, **kwargs):
