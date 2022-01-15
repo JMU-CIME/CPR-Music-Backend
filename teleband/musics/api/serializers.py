@@ -19,6 +19,7 @@ class PieceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Piece
         fields = [
+            "id",
             "name",
             "composer",
             "video",
