@@ -77,7 +77,7 @@ class EnrollmentViewSet(
         return self.serializer_class
 
 
-class CoursePermission(permissions.IsAdminUser):
+class CoursePermission(permissions.IsAuthenticated):
     def has_permission(self, request, view):
         if view.action == "create":
             return super().has_permission(request, view)
