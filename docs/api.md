@@ -1,61 +1,222 @@
+# Testing
+
+##
+
+<!-- POST /auth-token/
+Get an auth token for user
+DELETE /auth-token/ (Unimplemented)
+Delete that auth token from database, equivalent to purging a session cookie -->
+
+## GET /api/enrollments/
+
+- All of the current user’s enrollments, regardless of role.-->
+
+### PATCH /api/enrollments/:id
+
+Change user’s default instrument
+Params: instrument=<instrument_id>
+
+```
+curl -v \
+--request PATCH \
+-H 'Authorization: Token 2b2981292f56822c1bd30d494ac7f77ec0d5171d' \
+-d "instrument=20" \
+https://dev-api.tele.band/api/enrollments/2/ | jq '.'
+```
+
+<!--DELETE /api/enrollments/:id
+Remove a user/role/course enrollment-->
+
+### GET /api/pieces/
+
+- Get all the pieces in the database
+
+```
+curl -v \
+--request GET \
+--header 'Content-Type: application/json' \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+https://dev-api.tele.band/api/pieces/ && echo "\n"
+
+
+```
+
+### POST /api/courses/
+
+Params: name, start_date, end_date, slug
+Make a course (teacher only)
+curl -v \
+--request POST \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+-d "name=7th Grade Band" \
+-d "start_date=2022-01-01" \
+-d "end_date=2022-06-01" \
+-d "slug=nonsense" \
+https://dev-api.tele.band/api/courses/ && echo "\n"
+
+### GET /api/courses/:slug/assignments
+
+For student: get all assignments assigned to me for this course
+For teacher: get every assignment for every enrollment in this course (probably you want to get activities instead) -->
+
+### PATCH /api/courses/:slug/assignment/:id/
+
+Teacher only: change instrument
+
+<!-- GET /api/courses/:slug/activities
+Teacher only: list of all activities that any student has had (this doesn’t make much sense after the model simplification
+Example:
+[
+    {
+        "activity_type": "Melody",
+        "part_type": "Melody",
+        "body": "Do it"
+    }
+]
+GET /api/courses/:slug/roster
+Teacher only: get all enrollments for this course -->
+
+### POST /api/courses/:slug/assign
+
+- Params: piece_id
+- Creates one Assignment per person per Activity in database
+
+curl -v \
+--request POST \
+--header 'Content-Type: application/json' \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+-d '{"piece_id":"1"}' \
+https://dev-api.tele.band/api/courses/6th-grade-band/assign/ && echo "\n"
+
+- error bc it's the student
+
+curl -v \
+--request POST \
+--header 'Content-Type: application/json' \
+-H 'Authorization: Token 2b2981292f56822c1bd30d494ac7f77ec0d5171d' \
+-d "piece_id=1" \
+https://dev-api.tele.band/api/courses/6th-grade-band/assign/ && echo "\n"
+
+- (now with a teacher):
+
+```
+[{"activity":{"activity_type":"Melody","part_type":"Melody","body":"Practice the melody and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Melody","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":1},{"activity":{"activity_type":"Melody","part_type":"Melody","body":"Practice the melody and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Melody","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":2},{"activity":{"activity_type":"Bassline","part_type":"Bassline","body":"Practice the bassline and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Bassline","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":3},{"activity":{"activity_type":"Bassline","part_type":"Bassline","body":"Practice the bassline and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Bassline","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":4}]
+```
+
+### GET /api/courses/:slug/assignments/:id/notation
+
+- Both: gets the PartTranscription for this assignment
+  curl -v \
+  --request GET \
+  --header 'Content-Type: application/json' \
+  -H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+  https://dev-api.tele.band/api/courses/6th-grade-band/assignments/3/notation/ && echo "\n"
+
+curl -v \
+--request GET \
+--header 'Content-Type: application/json' \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+https://dev-api.tele.band/api/courses/6th-grade-band/assignments/ && echo "\n"
+
+## GET/POST /api/courses/:slug/assignments/:id/submissions
+
+- Student: list my submissions to this assignment or make a new one
+- Teacher: can do the same (could forbid POSTing will leave for now)
+
+curl -v \
+--request POST \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+-d "content='hello, here is my content'" \
+https://dev-api.tele.band/api/courses/6th-grade-band/assignments/3/submissions/ && echo "\n"
+
+### GET/POST /api/courses/:slug/assignments/:id/submissions/:id/attachments/
+
+- Student: list attachments to this submission or create one
+- Teacher: same
+
+curl -v \
+--request POST \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+-F 'file=@/Users/tgm/Downloads/Music CPR/Jubilo - Melody/Jubilo - Melody - Bb.musicxml.xml' \
+https://dev-api.tele.band/api/courses/6th-grade-band/assignments/3/submissions/1/attachments/ && echo "\n"
+
 # To add a new Piece
 
 Send a POST to /api/pieces with body like this:
 
 ```json
 {
-    "name": "Air for Band",
-    "ensemble_type": "Band",
-    "parts": [{
-        "name": "Air for Band Melody",
-        "part_type": "Melody",
-        "transpositions": [{
-            "transposition": "Bb",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch BC 8vb",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch BC",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch TC 8va",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch TC",
-            "flatio": ""
-        }, {
-            "transposition": "Eb",
-            "flatio": ""
-        }, {
-            "transposition": "F",
-            "flatio": ""
-        }]
-    }, {
-        "name": "Air for Band Bassline",
-        "part_type": "Bassline",
-        "transpositions": [{
-            "transposition": "Bb",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch BC 8vb",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch BC",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch TC 8va",
-            "flatio": ""
-        }, {
-            "transposition": "Concert Pitch TC",
-            "flatio": ""
-        }, {
-            "transposition": "Eb",
-            "flatio": ""
-        }, {
-            "transposition": "F",
-            "flatio": ""
-        }]
-    }]
+  "name": "Air for Band",
+  "ensemble_type": "Band",
+  "parts": [
+    {
+      "name": "Air for Band Melody",
+      "part_type": "Melody",
+      "transpositions": [
+        {
+          "transposition": "Bb",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch BC 8vb",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch BC",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch TC 8va",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch TC",
+          "flatio": ""
+        },
+        {
+          "transposition": "Eb",
+          "flatio": ""
+        },
+        {
+          "transposition": "F",
+          "flatio": ""
+        }
+      ]
+    },
+    {
+      "name": "Air for Band Bassline",
+      "part_type": "Bassline",
+      "transpositions": [
+        {
+          "transposition": "Bb",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch BC 8vb",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch BC",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch TC 8va",
+          "flatio": ""
+        },
+        {
+          "transposition": "Concert Pitch TC",
+          "flatio": ""
+        },
+        {
+          "transposition": "Eb",
+          "flatio": ""
+        },
+        {
+          "transposition": "F",
+          "flatio": ""
+        }
+      ]
+    }
+  ]
 }
 ```
