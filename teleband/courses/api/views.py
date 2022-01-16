@@ -77,17 +77,20 @@ class EnrollmentViewSet(
         return self.serializer_class
 
 
-class CoursePermission(permissions.BasePermission):
+class CoursePermission(permissions.IsAdminUser):
     def has_permission(self, request, view):
+        if view.action == "create":
+            return super().has_permission(request, view)
+        return True
+
+    def has_object_permission(self, request, view, obj):
         if view.action == "retrieve":
             return True
         try:
-            e = Enrollment.objects.get(user=request.user, course=view.get_object())
+            e = Enrollment.objects.get(user=request.user, course=obj)
             return e.role.name == "Teacher"
         except Enrollment.DoesNotExist:
-            logger.info(
-                "No Enrollment for {} in {}".format(request.user, view.get_object())
-            )
+            logger.info("No Enrollment for {} in {}".format(request.user, obj))
         return False
 
 
