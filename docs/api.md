@@ -1,17 +1,23 @@
 # Testing
 
-##
-
-<!-- POST /auth-token/
+### POST /auth-token/
 Get an auth token for user
-DELETE /auth-token/ (Unimplemented)
-Delete that auth token from database, equivalent to purging a session cookie -->
+
+### DELETE /auth-token/
+Delete that auth token from database, equivalent to purging a session cookie
+
+
+### POST /api/users/bulk_create_teachers/
+
+- For admin users only (aka users with staff=True)
+- POST a newline separated list of email addresses
+- Creates/sends invitations to each and these users will have Teacher group assigned when they complete signup
 
 ## GET /api/enrollments/
 
-- All of the current user’s enrollments, regardless of role.-->
+- All of the current user’s enrollments, regardless of role.
 
-### PATCH /api/enrollments/:id
+### PATCH /api/enrollments/:id/
 
 Change user’s default instrument
 Params: instrument=<instrument_id>
@@ -43,8 +49,11 @@ https://dev-api.tele.band/api/pieces/ && echo "\n"
 
 ### POST /api/courses/
 
-Params: name, start_date, end_date, slug
-Make a course (teacher only)
+- Params: name, start_date, end_date, slug
+- Make a course
+- Only for users with Teacher in django groups
+
+```bash
 curl -v \
 --request POST \
 -H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
@@ -52,7 +61,8 @@ curl -v \
 -d "start_date=2022-01-01" \
 -d "end_date=2022-06-01" \
 -d "slug=nonsense" \
-https://dev-api.tele.band/api/courses/ && echo "\n"
+https://dev-api.tele.band/api/courses/ | jq '.'
+```
 
 ### GET /api/courses/:slug/assignments
 
@@ -72,9 +82,91 @@ Example:
         "part_type": "Melody",
         "body": "Do it"
     }
-]
-GET /api/courses/:slug/roster
-Teacher only: get all enrollments for this course -->
+]-->
+
+### GET /api/courses/:slug/roster/
+
+- Teacher only: get all enrollments for this course 
+
+### POST /api/courses/:slug/roster/
+
+- Create Users if needed and Enrollments of those Users to this Course
+- POST a CSV file (param name `file`) with format fullname,username,password,grade
+- If user with that username exists and password matches, will use existing user
+- Otherwise user will be created, unless username with different password exists, these are returned as `invalid`
+- If existing Enrollments exist they will be returned
+
+
+```
+{
+  "users": {
+    "existing": [
+      {
+        "username": "bobby",
+        "name": "Bobby Bones",
+        "url": "http://localhost:8000/api/users/bobby/"
+      }
+    ],
+    "created": [
+      {
+        "username": "sally",
+        "name": "Sally Sue",
+        "url": "http://localhost:8000/api/users/sally/"
+      }
+    ],
+    "invalid": [
+      {
+        "name": "Vanessa Banessa",
+        "username": "vsauce",
+        "password": "123456",
+        "grade": "6th grade",
+        "reason": "Wrong password"
+      }
+    ]
+  },
+  "enrollments": {
+    "existing": [],
+    "created": [
+      {
+        "id": 22,
+        "course": {
+          "id": 8,
+          "name": "From FE",
+          "start_date": "2022-01-01",
+          "end_date": "2022-06-01",
+          "url": "http://localhost:8000/api/courses/from-fe/",
+          "slug": "from-fe",
+          "owner": {
+            "username": "admin",
+            "name": "",
+            "url": "http://localhost:8000/api/users/admin/"
+          }
+        },
+        "instrument": null,
+        "role": "Student"
+      },
+      {
+        "id": 23,
+        "course": {
+          "id": 8,
+          "name": "From FE",
+          "start_date": "2022-01-01",
+          "end_date": "2022-06-01",
+          "url": "http://localhost:8000/api/courses/from-fe/",
+          "slug": "from-fe",
+          "owner": {
+            "username": "admin",
+            "name": "",
+            "url": "http://localhost:8000/api/users/admin/"
+          }
+        },
+        "instrument": null,
+        "role": "Student"
+      }
+    ]
+  }
+}
+```
 
 ### POST /api/courses/:slug/assign
 
