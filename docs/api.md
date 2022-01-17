@@ -17,6 +17,12 @@ Delete that auth token from database, equivalent to purging a session cookie
 
 - All of the current user’s enrollments, regardless of role.
 
+### POST /api/enrollments/:id/
+
+- Add an Enrollment to a course
+- The user that makes this request must be a teacher of the course
+
+
 ### PATCH /api/enrollments/:id/
 
 Change user’s default instrument
@@ -30,8 +36,10 @@ curl -v \
 https://dev-api.tele.band/api/enrollments/2/ | jq '.'
 ```
 
-<!--DELETE /api/enrollments/:id
-Remove a user/role/course enrollment-->
+### DELETE /api/enrollments/:id
+
+Remove a user/role/course enrollment
+
 
 ### GET /api/pieces/
 
