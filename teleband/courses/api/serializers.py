@@ -28,6 +28,12 @@ class EnrollmentInstrumentSerializer(serializers.ModelSerializer):
         fields = ["id", "instrument"]
 
 
+class EnrollmentCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Enrollment
+        fields = ["id", "user", "course", "instrument", "role"]
+
+
 class EnrollmentSerializer(serializers.HyperlinkedModelSerializer):
     course = CourseSerializer()
     instrument = InstrumentSerializer()

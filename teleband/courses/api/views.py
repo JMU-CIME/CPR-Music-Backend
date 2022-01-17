@@ -22,6 +22,7 @@ from .serializers import (
     EnrollmentSerializer,
     CourseSerializer,
     CourseRelatedSerializer,
+    EnrollmentCreateSerializer,
     EnrollmentInstrumentSerializer,
     RosterSerializer,
 )
@@ -40,12 +41,23 @@ logger = logging.getLogger(__name__)
 User = get_user_model()
 
 
-class IsTeacherEnrollment(permissions.BasePermission):
+class IsTeacherEnrollment(permissions.IsAuthenticated):
     def has_permission(self, request, view):
-        if view.action not in ["update", "partial_update", "destroy"]:
-            return True
+        if view.action not in ["create", "update", "partial_update", "destroy"]:
+            return super().has_permission(request, view)
+
+        if view.action == "create":
+            try:
+                return (
+                    Enrollment.objects.get(
+                        user=request.user, course_id=request.POST["course"]
+                    ).role.name
+                    == "Teacher"
+                )
+            except Enrollment.DoesNotExist:
+                return False
+
         try:
-            print("The get object {}".format(view.get_object()))
             e = Enrollment.objects.get(
                 user=request.user, course=view.get_object().course
             )
@@ -59,6 +71,7 @@ class IsTeacherEnrollment(permissions.BasePermission):
 
 class EnrollmentViewSet(
     ListModelMixin,
+    CreateModelMixin,
     RetrieveModelMixin,
     UpdateModelMixin,
     DestroyModelMixin,
@@ -83,6 +96,8 @@ class EnrollmentViewSet(
     def get_serializer_class(self):
         if self.action == "update" or self.action == "partial_update":
             return EnrollmentInstrumentSerializer
+        elif self.action == "create":
+            return EnrollmentCreateSerializer
         return self.serializer_class
 
 
