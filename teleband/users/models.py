@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from invitations.models import Invitation
 import reversion
 
+from teleband.instruments.models import Instrument
+
 
 @reversion.register()
 class User(AbstractUser):
@@ -16,6 +18,7 @@ class User(AbstractUser):
     grade = models.CharField(blank=True, max_length=255)
     first_name = None  # type: ignore
     last_name = None  # type: ignore
+    instrument = models.ForeignKey(Instrument, null=True, on_delete=models.DO_NOTHING)
 
     def get_absolute_url(self):
         """Get url for user's detail view.
