@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("invitations", "0004_alter_invitation_id"),
+        ("invitations", "0003_auto_20151126_1523"),
         ("auth", "0012_alter_user_first_name_max_length"),
         ("users", "0005_seed_groups"),
     ]
