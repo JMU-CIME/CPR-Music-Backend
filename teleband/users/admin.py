@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from reversion.admin import VersionAdmin
 
 from teleband.users.forms import UserChangeForm, UserCreationForm
-from teleband.users.models import Role
+from teleband.users.models import Role, GroupInvitation
 
 User = get_user_model()
 

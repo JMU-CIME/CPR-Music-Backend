@@ -78,6 +78,7 @@ THIRD_PARTY_APPS = [
     "rest_framework.authtoken",
     "corsheaders",
     "reversion",
+    "invitations",
 ]
 
 LOCAL_APPS = [
@@ -273,7 +274,7 @@ ACCOUNT_EMAIL_REQUIRED = True
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-ACCOUNT_ADAPTER = "teleband.users.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = "invitations.models.InvitationsAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "teleband.users.adapters.SocialAccountAdapter"
 
@@ -296,3 +297,14 @@ CORS_URLS_REGEX = r"^/api/.*$"
 #     r"^http://localhost:3000$",  # works for local dev
 # ]
 # ------------------------------------------------------------------------------
+
+# django-invitations https://github.com/bee-keeper/django-invitations
+INVITATIONS_INVITATION_EXPIRY = 7  # one week
+INVITATIONS_INVITATION_ONLY = env.bool("DJANGO_INVITATIONS_INVITATION_ONLY", True)
+INVITATIONS_INVITATION_MODEL = "users.GroupInvitation"
+INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = env.bool(
+    "DJANGO_INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP", True
+)
+INVITATIONS_GONE_ON_ACCEPT_ERROR = env.bool(
+    "DJANGO_INVITATIONS_GONE_ON_ACCEPT_ERROR", False
+)
