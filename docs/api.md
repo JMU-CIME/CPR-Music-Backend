@@ -7,6 +7,12 @@ Get an auth token for user
 Delete that auth token from database, equivalent to purging a session cookie
 
 
+### PATCH /api/users/:username/
+
+- Change a user's instrument/external_id/grade
+- Requesting user must be a Teacher in any class that `:username` is a Student in
+
+
 ### POST /api/users/bulk_create_teachers/
 
 - For admin users only (aka users with staff=True)

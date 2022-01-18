@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserInstrumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "instrument", "external_id"]
+        fields = ["id", "instrument", "external_id", "grade"]
 
 
 class GenericNameSerializer(serializers.BaseSerializer):

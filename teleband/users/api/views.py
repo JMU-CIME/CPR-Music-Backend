@@ -22,25 +22,44 @@ from invitations.exceptions import AlreadyAccepted, AlreadyInvited, UserRegister
 from invitations.forms import CleanEmailMixin
 
 from .serializers import UserSerializer, UserInstrumentSerializer
+from teleband.courses.models import Enrollment, Course
+
 
 User = get_user_model()
 Invitation = get_invitation_model()
 
 
-# class IsAdminBulkCreate(permissions.IsAdminUser):
-#     def has_permission(self, request, view):
-#         if view.action == "bulk_create":
-#             return super().has_permission(request, view)
-#         return True
+class IsRelevantTeacherUpdate(permissions.IsAuthenticated):
+    def has_object_permission(self, request, view, obj):
+        if view.action not in ["update", "partial_update"]:
+            return True
+
+        # only permissible if request.user is a teacher of obj in any existing class
+        return Enrollment.objects.filter(
+            user=obj,
+            course__in=Course.objects.filter(
+                enrollment__user=request.user, enrollment__role__name="Teacher"
+            ),
+            role__name="Student",
+        ).exists()
 
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     lookup_field = "username"
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsRelevantTeacherUpdate & permissions.IsAuthenticated]
 
     def get_queryset(self, *args, **kwargs):
+        if self.action in ["update", "partial_update"]:
+            return self.queryset.filter(
+                enrollment__course__in=[
+                    e.course
+                    for e in Enrollment.objects.filter(
+                        user__username="admin", role__name="Teacher"
+                    )
+                ]
+            )
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(id=self.request.user.id)
 
