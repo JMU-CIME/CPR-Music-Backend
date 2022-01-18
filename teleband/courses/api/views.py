@@ -1,6 +1,7 @@
 import collections
 import csv
 from io import StringIO
+import json
 import logging
 
 from django.contrib.auth import get_user_model
@@ -212,19 +213,18 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
 
     @action(detail=True, methods=["post"])
     def assign(self, request, **kwargs):
-        if "piece_id" not in request.POST:
+        parsed = json.loads(request.body)
+        if "piece_id" not in parsed:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Missing piece_id in POST data"},
             )
 
         try:
-            piece = Piece.objects.get(pk=request.POST["piece_id"])
+            piece = Piece.objects.get(pk=parsed["piece_id"])
         except Piece.DoesNotExist:
             logger.info(
-                "Attempt to assign non-existent piece {}".format(
-                    request.POST["piece_id"]
-                )
+                "Attempt to assign non-existent piece {}".format(parsed["piece_id"])
             )
             return Response(status=status.HTTP_404_NOT_FOUND)
 
