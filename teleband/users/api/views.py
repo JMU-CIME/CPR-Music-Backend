@@ -21,35 +21,42 @@ from invitations.utils import get_invitation_model
 from invitations.exceptions import AlreadyAccepted, AlreadyInvited, UserRegisteredEmail
 from invitations.forms import CleanEmailMixin
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserInstrumentSerializer
 
 User = get_user_model()
 Invitation = get_invitation_model()
 
 
-class IsAdminBulkCreate(permissions.IsAdminUser):
-    def has_permission(self, request, view):
-        if view.action == "bulk_create":
-            return super().has_permission(request, view)
-        return True
+# class IsAdminBulkCreate(permissions.IsAdminUser):
+#     def has_permission(self, request, view):
+#         if view.action == "bulk_create":
+#             return super().has_permission(request, view)
+#         return True
 
 
 class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     lookup_field = "username"
-    permission_classes = [IsAdminBulkCreate & permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self, *args, **kwargs):
         assert isinstance(self.request.user.id, int)
         return self.queryset.filter(id=self.request.user.id)
+
+    def get_serializer_class(self):
+        if self.action in ["update", "partial_update"]:
+            return UserInstrumentSerializer
+        return self.serializer_class
 
     @action(detail=False)
     def me(self, request):
         serializer = UserSerializer(request.user, context={"request": request})
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
-    @action(detail=False, methods=["post"])
+    @action(
+        detail=False, methods=["post"], permission_classes=[permissions.IsAdminUser]
+    )
     def bulk_create_teachers(self, request):
         users_file = request.FILES["file"]
         contents = "".join([line.decode("utf-8") for line in users_file.readlines()])
@@ -78,19 +85,6 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
                 invite.send_invitation(request)
                 response["valid"].append({invitee: "invited"})
 
-        # created_users = []
-        # for row in reader:
-        #     created_users.append(
-        #         User.objects.create_user(
-        #             name=row[0], username=row[1], password=row[2], grade=row[3]
-        #         )
-        #     )
-        #     created_users[-1].groups.add(teacher_group)
-        #     created_users[-1].save()
-
-        # serializer = UserSerializer(
-        #     created_users, many=True, context={"request": request}
-        # )
         return Response(status=status.HTTP_200_OK, data=response)
 
 
