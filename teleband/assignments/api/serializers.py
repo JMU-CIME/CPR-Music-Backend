@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from teleband.assignments.models import Assignment, Activity
 from teleband.instruments.api.serializers import InstrumentSerializer
-from teleband.users.api.serializers import GenericNameSerializer
+from teleband.utils.serializers import GenericNameSerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer, PartSerializer
 
 

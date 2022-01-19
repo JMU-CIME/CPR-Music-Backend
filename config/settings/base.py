@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
     "corsheaders",
     "reversion",
     "invitations",
+    "drf_spectacular",
 ]
 
 LOCAL_APPS = [
@@ -287,6 +288,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
@@ -308,3 +310,14 @@ INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = env.bool(
 INVITATIONS_GONE_ON_ACCEPT_ERROR = env.bool(
     "DJANGO_INVITATIONS_GONE_ON_ACCEPT_ERROR", False
 )
+
+
+# drf-spectacular
+# ------------------------------------------------------------------------------
+# https://github.com/tfranzel/drf-spectacular
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Music-CPR Backend API",
+    "DESCRIPTION": "Backend for the Music-CPR music learning management system.",
+    "VERSION": "0.1.0",
+}

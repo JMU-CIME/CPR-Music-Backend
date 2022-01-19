@@ -4,7 +4,7 @@ from teleband.musics.models import Piece, Part, PartTransposition, Composer, Par
 
 from teleband.musics.models import PartTransposition, EnsembleType
 from teleband.instruments.models import Transposition
-from teleband.users.api.serializers import GenericNameSerializer
+from teleband.utils.serializers import GenericNameSerializer
 
 
 class ComposerSerializer(serializers.ModelSerializer):

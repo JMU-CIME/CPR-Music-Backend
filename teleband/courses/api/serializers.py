@@ -2,7 +2,8 @@ from rest_framework import serializers
 
 from teleband.courses.models import Course, Enrollment
 from teleband.instruments.api.serializers import InstrumentSerializer
-from teleband.users.api.serializers import GenericNameSerializer, UserSerializer
+from teleband.users.api.serializers import UserSerializer
+from teleband.utils.serializers import GenericNameSerializer
 
 
 class CourseRelatedSerializer(serializers.HyperlinkedModelSerializer):

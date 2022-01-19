@@ -6,6 +6,7 @@ from django.urls import include, path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 from teleband.users.api.views import obtain_delete_auth_token
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -19,6 +20,12 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("invitations/", include("invitations.urls", namespace="invitations")),
     # Your stuff: custom urls includes go here
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "api/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 if settings.DEBUG:
     # Static file serving when using Gunicorn + Uvicorn for local web socket development
