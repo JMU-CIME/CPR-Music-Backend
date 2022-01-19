@@ -5,6 +5,7 @@ import json
 import logging
 
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.db.utils import IntegrityError
 from rest_framework import permissions
 from rest_framework import status
@@ -213,7 +214,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
 
     @action(detail=True, methods=["post"])
     def assign(self, request, **kwargs):
-        parsed = json.loads(request.body)
+        parsed = request.data
         if "piece_id" not in parsed:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
@@ -230,6 +231,22 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
 
         course = self.get_object()
 
+        missing_instruments = Enrollment.objects.filter(
+            Q(instrument=None) & Q(user__instrument=None),
+            course=course,
+            role__name="Student",
+        )
+        if missing_instruments.exists():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "message": "Some users and their enrollments have no instrument",
+                    "enrollments": EnrollmentSerializer(
+                        missing_instruments, many=True, context={"request": request}
+                    ).data,
+                },
+            )
+
         assignments = []
         for activity in Activity.objects.all():
             # Get this piece’s part for this kind of activity
@@ -239,7 +256,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
                     Assignment.objects.create(
                         activity=activity,
                         enrollment=e,
-                        instrument=e.instrument,
+                        instrument=e.instrument if e.instrument else e.user.instrument,
                         part=part,
                     )
                 )

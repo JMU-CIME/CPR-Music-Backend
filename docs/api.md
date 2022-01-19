@@ -205,8 +205,62 @@ https://dev-api.tele.band/api/courses/6th-grade-band/assign/ && echo "\n"
 
 - (now with a teacher):
 
-```
+```json
 [{"activity":{"activity_type":"Melody","part_type":"Melody","body":"Practice the melody and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Melody","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":1},{"activity":{"activity_type":"Melody","part_type":"Melody","body":"Practice the melody and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Melody","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":2},{"activity":{"activity_type":"Bassline","part_type":"Bassline","body":"Practice the bassline and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Bassline","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":3},{"activity":{"activity_type":"Bassline","part_type":"Bassline","body":"Practice the bassline and then record yourself performing it."},"deadline":null,"instrument":{"name":"Trombone","transposition":"Concert Pitch BC"},"part":{"name":"Air for Band Bassline","piece":{"id":1,"name":"Air for Band","composer":null,"video":"","audio":"","date_composed":null,"ensemble_type":1}},"id":4}]
+```
+
+- If there are students in the course that do not have an instrument on their Enrollment or their User this endpoint will return 400 with the following
+
+```json
+{
+  "message": "Some users and their enrollments have no instrument",
+  "enrollments": [
+    {
+      "id": 22,
+      "course": {
+        "id": 8,
+        "name": "From FE",
+        "start_date": "2022-01-01",
+        "end_date": "2022-06-01",
+        "url": "http://localhost:8000/api/courses/from-fe/",
+        "slug": "from-fe",
+        "owner": {
+          "id": 1,
+          "username": "admin",
+          "name": "",
+          "url": "http://localhost:8000/api/users/admin/",
+          "grade": "",
+          "instrument": null,
+          "external_id": ""
+        }
+      },
+      "instrument": null,
+      "role": "Student"
+    },
+    {
+      "id": 23,
+      "course": {
+        "id": 8,
+        "name": "From FE",
+        "start_date": "2022-01-01",
+        "end_date": "2022-06-01",
+        "url": "http://localhost:8000/api/courses/from-fe/",
+        "slug": "from-fe",
+        "owner": {
+          "id": 1,
+          "username": "admin",
+          "name": "",
+          "url": "http://localhost:8000/api/users/admin/",
+          "grade": "",
+          "instrument": null,
+          "external_id": ""
+        }
+      },
+      "instrument": null,
+      "role": "Student"
+    }
+  ]
+}
 ```
 
 ### GET /api/courses/:slug/assignments/:id/notation
