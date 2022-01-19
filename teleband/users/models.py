@@ -19,7 +19,14 @@ class User(AbstractUser):
     first_name = None  # type: ignore
     last_name = None  # type: ignore
     instrument = models.ForeignKey(Instrument, null=True, on_delete=models.DO_NOTHING)
-    external_id = models.CharField(blank=True, max_length=255)
+    external_id = models.CharField(
+        _("External ID"),
+        blank=True,
+        max_length=255,
+        help_text=_(
+            "Any string that is meaningful to the user's educational institution."
+        ),
+    )
 
     def get_absolute_url(self):
         """Get url for user's detail view.
