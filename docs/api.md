@@ -263,6 +263,16 @@ https://dev-api.tele.band/api/courses/6th-grade-band/assign/ && echo "\n"
 }
 ```
 
+### POST /api/courses/:slug/unassign
+
+- Params: piece_id
+- Removes every Assignment for this piece assigned to anyone in this class
+- Returns 400 if piece_id is missing
+- Returns 404 if no such piece_id
+- Returns 400 if any submissions have already been made to this assignment
+- Returns 200 with empty body on success
+
+
 ### GET /api/courses/:slug/assignments/:id/notation
 
 - Both: gets the PartTranscription for this assignment
