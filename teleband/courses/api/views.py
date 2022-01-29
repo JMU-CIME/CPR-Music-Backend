@@ -5,8 +5,8 @@ import json
 import logging
 
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError, transaction
 from django.db.models import Q
-from django.db.utils import IntegrityError
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import action
@@ -267,3 +267,31 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
             assignments, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+    @action(detail=True, methods=["post"])
+    def unassign(self, request, **kwargs):
+        parsed = request.data
+        if "piece_id" not in parsed:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Missing piece_id in POST data"},
+            )
+
+        try:
+            piece = Piece.objects.get(pk=parsed["piece_id"])
+        except Piece.DoesNotExist:
+            logger.info(
+                "Attempt to assign non-existent piece {}".format(parsed["piece_id"])
+            )
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        course = self.get_object()
+
+        try:
+            with transaction.atomic():
+                Assignment.objects.filter(part__piece_id=parsed["piece_id"], enrollment__course=course).delete()
+        except IntegrityError:
+            logger.error("Cannot remove all the assignments for {} in {}".format(parsed["piece_id"], course.slug))
+            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Cannot remove assignments for piece {}".format(parsed["piece_id"])})
+
+        return Response(status=status.HTTP_200_OK)
