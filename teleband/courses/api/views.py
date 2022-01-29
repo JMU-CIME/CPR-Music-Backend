@@ -49,6 +49,8 @@ class IsTeacherEnrollment(permissions.IsAuthenticated):
             return super().has_permission(request, view)
 
         if view.action == "create":
+            if "course" not in request.POST:
+                return super().has_permission(request, view)
             try:
                 return (
                     Enrollment.objects.get(

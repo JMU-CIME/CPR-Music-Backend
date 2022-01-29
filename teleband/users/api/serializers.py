@@ -21,4 +21,4 @@ class UserSerializer(serializers.ModelSerializer):
 class UserInstrumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "instrument", "external_id", "grade"]
+        fields = ["id", "name", "instrument", "external_id", "grade"]
