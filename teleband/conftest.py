@@ -6,6 +6,9 @@ from teleband.users.tests.factories import UserFactory
 from teleband.musics.models import Piece
 from teleband.musics.tests.factories import PieceFactory
 
+from teleband.instruments.models import Instrument
+from teleband.instruments.tests.factories import InstrumentFactory
+
 
 @pytest.fixture(autouse=True)
 def media_storage(settings, tmpdir):
@@ -20,3 +23,8 @@ def user() -> User:
 @pytest.fixture
 def piece() -> Piece:
     return PieceFactory()
+
+
+@pytest.fixture
+def instrument() -> Instrument:
+    return InstrumentFactory()
