@@ -6,7 +6,7 @@ from teleband.instruments.models import Instrument
 pytestmark = pytest.mark.django_db
 
 
-def test_user_detail(instrument: Instrument):
+def test_instrument_detail(instrument: Instrument):
     assert (
         reverse("api:instrument-detail", kwargs={"id": instrument.id})
         == f"/api/instruments/{instrument.id}/"
