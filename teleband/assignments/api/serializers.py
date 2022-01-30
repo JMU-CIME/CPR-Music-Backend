@@ -1,13 +1,21 @@
 from rest_framework import serializers
 
-from teleband.assignments.models import Assignment, Activity
+from teleband.assignments.models import Assignment, Activity, ActivityType
 from teleband.instruments.api.serializers import InstrumentSerializer
 from teleband.utils.serializers import GenericNameSerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer, PartSerializer
 
 
+class ActivityTypeSerializer(serializers.ModelSerializer):
+    category = GenericNameSerializer()
+
+    class Meta:
+        model = ActivityType
+        fields = ["name", "category"]
+
+
 class ActivitySerializer(serializers.ModelSerializer):
-    activity_type = GenericNameSerializer()
+    activity_type = ActivityTypeSerializer()
     part_type = GenericNameSerializer()
 
     class Meta:
