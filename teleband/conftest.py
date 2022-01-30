@@ -9,6 +9,9 @@ from teleband.musics.tests.factories import PieceFactory
 from teleband.instruments.models import Instrument
 from teleband.instruments.tests.factories import InstrumentFactory
 
+from teleband.courses.models import Enrollment
+from teleband.courses.tests.factories import EnrollmentFactory
+
 
 @pytest.fixture(autouse=True)
 def media_storage(settings, tmpdir):
@@ -28,3 +31,8 @@ def piece() -> Piece:
 @pytest.fixture
 def instrument() -> Instrument:
     return InstrumentFactory()
+
+
+@pytest.fixture
+def enrollment() -> Enrollment:
+    return EnrollmentFactory()

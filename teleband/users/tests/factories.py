@@ -4,6 +4,16 @@ from django.contrib.auth import get_user_model
 from factory import Faker, post_generation
 from factory.django import DjangoModelFactory
 
+from teleband.users.models import Role
+
+
+class RoleFactory(DjangoModelFactory):
+
+    name = Faker("color")
+
+    class Meta:
+        model = Role
+
 
 class UserFactory(DjangoModelFactory):
 
