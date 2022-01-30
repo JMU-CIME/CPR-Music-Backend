@@ -6,10 +6,11 @@ from teleband.utils.fields import generate_slug_from_name
 
 
 def update_site_forward(apps, schema_editor):
-    """Set site domain and name."""
+    """Compute slugs from names."""
     Piece = apps.get_model("musics", "Piece")
     for piece in Piece.objects.all():
         generate_slug_from_name(piece, Piece)
+        piece.save()
 
 
 class Migration(migrations.Migration):

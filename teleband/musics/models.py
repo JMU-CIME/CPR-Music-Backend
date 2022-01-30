@@ -37,7 +37,7 @@ class Piece(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            generate_slug_from_name(self, Course)
+            generate_slug_from_name(self, Piece)
 
         super().save(*args, **kwargs)
 
