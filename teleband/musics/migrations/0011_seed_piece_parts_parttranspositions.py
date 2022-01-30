@@ -117,6 +117,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("musics", "0010_alter_part_piece"),
+        ("instruments", "0003_data_migration_seed_instruments"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

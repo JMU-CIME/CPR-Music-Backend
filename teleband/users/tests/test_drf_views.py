@@ -14,6 +14,7 @@ class TestUserViewSet:
         request.user = user
 
         view.request = request
+        view.action = "retrieve"
 
         assert user in view.get_queryset()
 
@@ -30,4 +31,8 @@ class TestUserViewSet:
             "username": user.username,
             "name": user.name,
             "url": f"http://testserver/api/users/{user.username}/",
+            "external_id": user.external_id,
+            "grade": user.grade,
+            "id": user.id,
+            "instrument": user.instrument,
         }
