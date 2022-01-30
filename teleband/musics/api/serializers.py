@@ -21,6 +21,7 @@ class PieceSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "slug",
             "composer",
             "video",
             "audio",
