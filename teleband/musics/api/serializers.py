@@ -26,6 +26,7 @@ class PieceSerializer(serializers.ModelSerializer):
             "audio",
             "date_composed",
             "ensemble_type",
+            "accompaniment"
         ]
 
 
@@ -43,7 +44,7 @@ class PartTranspositionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PartTransposition
-        fields = ["part", "transposition", "flatio"]
+        fields = ["part", "transposition", "flatio", "sample_audio"]
 
 
 class PartTranspositionCreateSerializer(serializers.ModelSerializer):

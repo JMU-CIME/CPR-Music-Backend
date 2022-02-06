@@ -32,6 +32,7 @@ class Piece(models.Model):
     audio = models.URLField(blank=True)
     date_composed = models.DateField(null=True, blank=True)
     ensemble_type = models.ForeignKey(EnsembleType, on_delete=models.PROTECT)
+    accompaniment = models.FileField(blank=True, upload_to="accompaniments/")
 
     def __str__(self):
         return self.name
@@ -50,6 +51,7 @@ class Part(models.Model):
     name = models.CharField(max_length=255)
     part_type = models.ForeignKey(PartType, on_delete=models.PROTECT)
     piece = models.ForeignKey(Piece, related_name="parts", on_delete=models.PROTECT)
+    sample_audio = models.FileField(blank=True, upload_to="sample_audio/")
 
     def __str__(self):
         return self.name
