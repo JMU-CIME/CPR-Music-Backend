@@ -34,7 +34,7 @@ class ActivityType(models.Model):
 class Activity(models.Model):
 
     activity_type = models.ForeignKey(ActivityType, on_delete=models.PROTECT)
-    part_type = models.ForeignKey(PartType, on_delete=models.PROTECT)
+    part_type = models.ForeignKey(PartType, null=True, on_delete=models.PROTECT)
     body = models.TextField()
 
     class Meta:
