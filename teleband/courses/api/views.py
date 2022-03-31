@@ -256,7 +256,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
                 "piece": piece
             }
             if activity.part_type:
-                kwargs["part_type"] == activity.part_type
+                kwargs["part_type"] = activity.part_type
             part = Part.objects.get(**kwargs)
             for e in Enrollment.objects.filter(course=course, role__name="Student"):
                 assignments.append(
