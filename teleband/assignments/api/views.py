@@ -71,6 +71,6 @@ class AssignmentViewSet(
         if role.name == "Student":
             return Assignment.objects.filter(
                 enrollment__course=course, enrollment__user=self.request.user
-            )
+            ).select_related("activity", "instrument", "part", "part__piece")
         if role.name == "Teacher":
-            return Assignment.objects.filter(enrollment__course=course)
+            return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "part", "part__piece")
