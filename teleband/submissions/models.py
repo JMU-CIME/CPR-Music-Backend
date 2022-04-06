@@ -25,6 +25,7 @@ class SubmissionAttachment(models.Model):
     class Meta:
         verbose_name = "Submission Attachment"
         verbose_name_plural = "Submission Attachments"
+        ordering = ["-submitted"]
 
     def __str__(self):
         return f"{self.submission}: {self.file}"

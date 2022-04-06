@@ -5,9 +5,11 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+
 from .serializers import (
     SubmissionSerializer,
     AttachmentSerializer,
+    TeacherSubmissionSerializer,
 )
 
 from teleband.courses.models import Course
@@ -29,6 +31,9 @@ class SubmissionViewSet(
             assignment=Assignment.objects.get(pk=self.kwargs["assignment_id"])
         )
 
+    # @action(detail=False)
+    # def get_
+
 
 class AttachmentViewSet(
     ListModelMixin, RetrieveModelMixin, CreateModelMixin, GenericViewSet
@@ -43,3 +48,40 @@ class AttachmentViewSet(
         serializer.save(
             submission=Submission.objects.get(pk=self.kwargs["submission_pk"])
         )
+
+
+class TeacherSubmissionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    serializer_class = TeacherSubmissionSerializer
+    queryset = Submission.objects.all()
+
+    # def get_queryset(self,):
+    #     pass
+
+    @action(detail=False)
+    def recent(self, request, **kwargs):
+        if "piece_id" not in request.GET or "activity_id" not in request.GET:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": "Missing piece_id or activity_id (figure it out!) in get data"
+                },
+            )
+        
+        course_id = self.kwargs["course_slug_slug"]
+        piece_id = request.GET["piece_id"]
+        activity_id = request.GET["activity_id"]
+        
+        queryset =  (
+            Submission.objects.filter(
+                assignment__enrollment__course__slug=course_id,
+                assignment__activity__activity_type=activity_id,
+                assignment__part__piece_id=piece_id,
+            )
+            .order_by("assignment__enrollment", "-submitted")
+            .distinct("assignment__enrollment")
+        )
+
+        serializer = self.serializer_class(
+            queryset, many=True, context={"request": request}
+        )
+        return Response(status=status.HTTP_200_OK, data=serializer.data)

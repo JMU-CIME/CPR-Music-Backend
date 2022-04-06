@@ -18,3 +18,20 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubmissionAttachment
         fields = ["id", "file", "submitted"]
+
+
+class TeacherSubmissionSerializer(serializers.ModelSerializer):
+    attachments = AttachmentSerializer(read_only=True, many=True)
+    assignment = AssignmentSerializer()
+
+    def get_attachments(self, queryset):
+        print(queryset)
+        return None
+    
+    class Meta:
+        model = Submission
+        fields = ["id", "assignment", "submitted", "content", "attachments"]
+
+        # extra_kwargs = {
+        #     "assignment": {"view_name": "api:assignment-detail", "lookup_field": "id"},
+        # }

@@ -83,6 +83,13 @@ https://dev-api.tele.band/api/courses/ | jq '.'
 For student: get all assignments assigned to me for this course
 For teacher: get every assignment for every enrollment in this course (probably you want to get activities instead) -->
 
+```
+curl -v \
+--request GET \
+--header 'Content-Type: application/json' \
+-H 'Authorization: Token d0c5a7bf9508026cab574bf149785caa52bb069b' \
+http://localhost:8000/api/courses/6th-grade-band/assignments/ && echo "\n"
+
 ### PATCH /api/courses/:slug/assignment/:id/
 
 Teacher only: change instrument
@@ -390,3 +397,6 @@ Send a POST to /api/pieces with body like this:
   ]
 }
 ```
+
+## GET all students in this course's most recent submissions for an "assignment" (piece x activity)
+* `http://localhost:8000/api/courses/6th-grade-band/submissions/recent/?piece_id=1&activity_id=1`
