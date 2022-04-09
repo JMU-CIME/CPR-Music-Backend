@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from teleband.submissions.models import Submission, SubmissionAttachment
+from teleband.submissions.models import Grade, Submission, SubmissionAttachment
 from teleband.assignments.api.serializers import AssignmentSerializer
 
 
@@ -27,7 +27,7 @@ class TeacherSubmissionSerializer(serializers.ModelSerializer):
     def get_attachments(self, queryset):
         print(queryset)
         return None
-    
+
     class Meta:
         model = Submission
         fields = ["id", "assignment", "submitted", "content", "attachments"]
@@ -35,3 +35,9 @@ class TeacherSubmissionSerializer(serializers.ModelSerializer):
         # extra_kwargs = {
         #     "assignment": {"view_name": "api:assignment-detail", "lookup_field": "id"},
         # }
+
+
+class GradeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Grade
+        fields = ["id", "rhythm", "tone", "expression", "created_at", "grader", "submission"]

@@ -3,17 +3,18 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 
 from .serializers import (
+    GradeSerializer,
     SubmissionSerializer,
     AttachmentSerializer,
     TeacherSubmissionSerializer,
 )
 
 from teleband.courses.models import Course
-from teleband.submissions.models import Submission, SubmissionAttachment
+from teleband.submissions.models import Grade, Submission, SubmissionAttachment
 from teleband.assignments.models import Assignment
 
 
@@ -85,3 +86,7 @@ class TeacherSubmissionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSe
             queryset, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+class GradeViewSet(ModelViewSet):
+    queryset = Grade.objects.all()
+    serializer_class = GradeSerializer
