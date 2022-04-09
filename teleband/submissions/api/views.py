@@ -59,23 +59,23 @@ class TeacherSubmissionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSe
 
     @action(detail=False)
     def recent(self, request, **kwargs):
-        if "piece_id" not in request.GET or "activity_id" not in request.GET:
+        if "piece_slug" not in request.GET or "activity_name" not in request.GET:
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={
-                    "error": "Missing piece_id or activity_id (figure it out!) in get data"
+                    "error": "Missing piece_slug or activity_name (figure it out!) in get data"
                 },
             )
         
         course_id = self.kwargs["course_slug_slug"]
-        piece_id = request.GET["piece_id"]
-        activity_id = request.GET["activity_id"]
+        piece_slug = request.GET["piece_slug"]
+        activity_name = request.GET["activity_name"]
         
         queryset =  (
             Submission.objects.filter(
                 assignment__enrollment__course__slug=course_id,
-                assignment__activity__activity_type=activity_id,
-                assignment__part__piece_id=piece_id,
+                assignment__activity__activity_type__name=activity_name,
+                assignment__part__piece__slug=piece_slug,
             )
             .order_by("assignment__enrollment", "-submitted")
             .distinct("assignment__enrollment")
