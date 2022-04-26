@@ -30,13 +30,23 @@ class PieceSerializer(serializers.ModelSerializer):
             "accompaniment"
         ]
 
+class TranspositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transposition
+        fields = ["id", "name"]
+
+class PartTranspositionSimpleSerializer(serializers.ModelSerializer):
+    transposition = TranspositionSerializer()
+    class Meta:
+        model = PartTransposition
+        fields = ["part", "transposition", "flatio"]
 
 class PartSerializer(serializers.ModelSerializer):
     piece = PieceSerializer()
-
+    transpositions = PartTranspositionSimpleSerializer(many=True)
     class Meta:
         model = Part
-        fields = ["name", "piece"]
+        fields = ["name", "piece", "transpositions"]
 
 
 class PartTranspositionSerializer(serializers.ModelSerializer):
