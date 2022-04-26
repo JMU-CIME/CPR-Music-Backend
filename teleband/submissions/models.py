@@ -33,7 +33,7 @@ class SubmissionAttachment(models.Model):
 
 class Grade(models.Model):
 
-    submission = models.ForeignKey(Submission, on_delete=models.PROTECT)
+    submission = models.ForeignKey(Submission, related_name="grades", on_delete=models.PROTECT)
     grader = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="grades", on_delete=models.PROTECT
     )

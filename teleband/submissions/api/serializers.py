@@ -19,10 +19,16 @@ class AttachmentSerializer(serializers.ModelSerializer):
         model = SubmissionAttachment
         fields = ["id", "file", "submitted"]
 
+class GradeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Grade
+        fields = ["id", "rhythm", "tone", "expression", "created_at", "grader", "submission"]
+
 
 class TeacherSubmissionSerializer(serializers.ModelSerializer):
     attachments = AttachmentSerializer(read_only=True, many=True)
     assignment = AssignmentSerializer()
+    grades = GradeSerializer(many=True)
 
     def get_attachments(self, queryset):
         print(queryset)
@@ -30,14 +36,10 @@ class TeacherSubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ["id", "assignment", "submitted", "content", "attachments"]
+        fields = ["id", "assignment", "submitted", "content", "attachments", "grades"]
 
         # extra_kwargs = {
         #     "assignment": {"view_name": "api:assignment-detail", "lookup_field": "id"},
         # }
 
 
-class GradeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Grade
-        fields = ["id", "rhythm", "tone", "expression", "created_at", "grader", "submission"]

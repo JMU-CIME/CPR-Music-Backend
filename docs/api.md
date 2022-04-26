@@ -400,3 +400,17 @@ Send a POST to /api/pieces with body like this:
 
 ## GET all students in this course's most recent submissions for an "assignment" (piece x activity)
 * `http://localhost:8000/api/courses/6th-grade-band/submissions/recent/?piece_id=1&activity_id=1`
+
+## Grade assignment submission
+
+```bash
+curl -v \
+--request POST \
+-H 'Authorization: Token d0c5a7bf9508026cab574bf149785caa52bb069b' \
+-d "submission=5" \
+-d "rhythm=1" \
+-d "tone=2" \
+-d "expression=5" \
+-d "grader=27" \
+http://localhost:8000/api/courses/6th-grade-band/grades/ | jq '.'
+```
