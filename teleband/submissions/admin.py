@@ -20,10 +20,11 @@ class SubmissionAttachmentAdmin(VersionAdmin):
 class GradeAdmin(VersionAdmin):
     list_display = (
         "id",
-        "submission",
+        "student_submission",
+        "own_submission",
         "grader",
         "rhythm",
         "tone",
         "expression",
     )
-    list_filter = ("submission", "grader")
+    list_filter = ("student_submission", "own_submission", "grader")

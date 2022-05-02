@@ -7,7 +7,7 @@ from teleband.assignments.api.serializers import AssignmentSerializer
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Submission
-        fields = ["id", "submitted", "content"]
+        fields = ["id", "submitted", "content", "grade", "self_grade"]
 
         # extra_kwargs = {
         #     "assignment": {"view_name": "api:assignment-detail", "lookup_field": "id"},
@@ -22,13 +22,14 @@ class AttachmentSerializer(serializers.ModelSerializer):
 class GradeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Grade
-        fields = ["id", "rhythm", "tone", "expression", "created_at", "grader", "submission"]
+        fields = ["id", "rhythm", "tone", "expression", "created_at", "grader", "student_submission", "own_submission"]
 
 
 class TeacherSubmissionSerializer(serializers.ModelSerializer):
     attachments = AttachmentSerializer(read_only=True, many=True)
     assignment = AssignmentSerializer()
-    grades = GradeSerializer(many=True)
+    grade = GradeSerializer()
+    self_grade = GradeSerializer()
 
     def get_attachments(self, queryset):
         print(queryset)
@@ -36,7 +37,7 @@ class TeacherSubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ["id", "assignment", "submitted", "content", "attachments", "grades"]
+        fields = ["id", "assignment", "submitted", "content", "attachments", "grade", "self_grade"]
 
         # extra_kwargs = {
         #     "assignment": {"view_name": "api:assignment-detail", "lookup_field": "id"},
