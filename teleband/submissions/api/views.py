@@ -4,13 +4,13 @@ from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from teleband.submissions.api.teacher_serializers import TeacherSubmissionSerializer
 
 
 from .serializers import (
     GradeSerializer,
     SubmissionSerializer,
     AttachmentSerializer,
-    TeacherSubmissionSerializer,
 )
 
 from teleband.courses.models import Course

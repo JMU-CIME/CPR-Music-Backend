@@ -3,6 +3,7 @@ from rest_framework import serializers
 from teleband.assignments.models import Assignment, Activity, ActivityType
 from teleband.courses.api.serializers import EnrollmentSerializer
 from teleband.instruments.api.serializers import InstrumentSerializer
+from teleband.submissions.api.serializers import SubmissionSerializer
 from teleband.utils.serializers import GenericNameSerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer, PartSerializer
 
@@ -29,11 +30,12 @@ class AssignmentSerializer(serializers.ModelSerializer):
     instrument = InstrumentSerializer()
     part = PartSerializer()
     enrollment = EnrollmentSerializer()
+    submissions = SubmissionSerializer(many=True)
 
     class Meta:
         model = Assignment
         # fields = ["activity", "deadline", "instrument", "id", "url"]
-        fields = ["activity", "deadline", "instrument", "part", "id", "enrollment"]
+        fields = ["activity", "deadline", "instrument", "part", "id", "enrollment", "submissions"]
 
         extra_kwargs = {
             "url": {"view_name": "api:assignment-detail", "lookup_field": "id"},

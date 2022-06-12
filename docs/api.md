@@ -306,6 +306,11 @@ curl -v \
 -d "content='hello, here is my content'" \
 https://dev-api.tele.band/api/courses/6th-grade-band/assignments/3/submissions/ && echo "\n"
 
+curl -v \
+--request GET \
+-H 'Authorization: Token 70c0fbdb510234c9c94bd29641a3ba95752dcfea' \
+https://localhost:8000/api/courses/6th-grade-band/assignments/4/submissions/ && echo "\n"
+
 ### GET/POST /api/courses/:slug/assignments/:id/submissions/:id/attachments/
 
 - Student: list attachments to this submission or create one
