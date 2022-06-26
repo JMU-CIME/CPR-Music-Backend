@@ -10,6 +10,9 @@ SECRET_KEY = env(
     "DJANGO_SECRET_KEY",
     default="JBvv4nzDzFAAfBgYHLZJqbRAbk5aj5c5PTdxP0vNwADmdOGcLfc9pfrXAz1grIc2",
 )
+DATABASES = {
+    "default": env.db("DATABASE_URL", default="sqlite:///db.sqlite"),
+}
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]
 
