@@ -91,7 +91,9 @@ class PartCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         transpositions_data = validated_data.pop("transpositions")
-        part = Part.objects.create(piece=self.piece, **validated_data)
+        piece = Piece.objects.get(id=self.piece.id)
+        # part = Part.objects.create(piece=self.piece, **validated_data)
+        part = Part.objects.create(piece=piece, **validated_data)
 
         pts = PartTranspositionCreateSerializer(many=True, part=part)
         pts.create(transpositions_data)
