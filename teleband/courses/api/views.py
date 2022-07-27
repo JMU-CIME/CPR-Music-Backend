@@ -122,14 +122,20 @@ class CoursePermission(permissions.IsAuthenticated):
         return False
 
 
-class CourseViewSet(RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
+class CourseViewSet(
+    RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet
+):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_field = "slug"
     permission_classes = [CoursePermission]
 
     def get_serializer_class(self):
-        if self.action == "create" or self.action == "update" or self.action == "partial_update":
+        if (
+            self.action == "create"
+            or self.action == "update"
+            or self.action == "partial_update"
+        ):
             return CourseRelatedSerializer
         # elif self.action == "update" or self.action == "partial_update":
         #     return EnrollmentInstrumentSerializer
@@ -151,6 +157,13 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, Gene
             response = collections.defaultdict(list)
 
             for name, username, password, grade in reader:
+                if (name, username, password, grade) == (
+                    "fullname",
+                    "username",
+                    "password",
+                    "grade",
+                ):
+                    continue
                 try:
                     user = User.objects.get(username=username)
                     if user.check_password(password):
@@ -254,9 +267,7 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, Gene
         assignments = []
         for activity in Activity.objects.all():
             # Get this piece’s part for this kind of activity
-            kwargs = {
-                "piece": piece
-            }
+            kwargs = {"piece": piece}
             if activity.part_type:
                 kwargs["part_type"] = activity.part_type
             part = Part.objects.get(**kwargs)
@@ -296,9 +307,22 @@ class CourseViewSet(RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, Gene
 
         try:
             with transaction.atomic():
-                Assignment.objects.filter(part__piece_id=parsed["piece_id"], enrollment__course=course).delete()
+                Assignment.objects.filter(
+                    part__piece_id=parsed["piece_id"], enrollment__course=course
+                ).delete()
         except IntegrityError:
-            logger.error("Cannot remove all the assignments for {} in {}".format(parsed["piece_id"], course.slug))
-            return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Cannot remove assignments for piece {}".format(parsed["piece_id"])})
+            logger.error(
+                "Cannot remove all the assignments for {} in {}".format(
+                    parsed["piece_id"], course.slug
+                )
+            )
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "error": "Cannot remove assignments for piece {}".format(
+                        parsed["piece_id"]
+                    )
+                },
+            )
 
         return Response(status=status.HTTP_200_OK)
