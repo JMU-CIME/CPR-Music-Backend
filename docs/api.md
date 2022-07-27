@@ -419,3 +419,9 @@ curl -v \
 -d "grader=27" \
 http://localhost:8000/api/courses/6th-grade-band/grades/ | jq '.'
 ```
+## update course name or start/end `PATCH /api/courses/:slug/
+curl -v \
+--request PATCH \
+-H 'Authorization: Token d0c5a7bf9508026cab574bf149785caa52bb069b' \
+-d "slug=testing-newb-course" \
+http://localhost:8000/api/courses/testing-new-course/ | jq '.'
