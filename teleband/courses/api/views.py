@@ -122,15 +122,17 @@ class CoursePermission(permissions.IsAuthenticated):
         return False
 
 
-class CourseViewSet(RetrieveModelMixin, CreateModelMixin, GenericViewSet):
+class CourseViewSet(RetrieveModelMixin, CreateModelMixin, UpdateModelMixin, GenericViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     lookup_field = "slug"
     permission_classes = [CoursePermission]
 
     def get_serializer_class(self):
-        if self.action == "create":
+        if self.action == "create" or self.action == "update" or self.action == "partial_update":
             return CourseRelatedSerializer
+        # elif self.action == "update" or self.action == "partial_update":
+        #     return EnrollmentInstrumentSerializer
         return self.serializer_class
 
     def perform_create(self, serializer):
