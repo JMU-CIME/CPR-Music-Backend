@@ -178,6 +178,6 @@ LOGGING = {
 # Your stuff...
 # ------------------------------------------------------------------------------
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://dev.tele.band$",
-    r"^https://tele.band$",
+    r"^https://dev.musiccpr.org$",
+    r"^https://musiccpr.org$",
 ]
