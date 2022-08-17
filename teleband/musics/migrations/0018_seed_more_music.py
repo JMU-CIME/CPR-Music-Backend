@@ -76,6 +76,7 @@ data = [
         "name": "The Favorite",
         "ensemble_type": "Orchestra",
         "accompaniment": "",
+        "video": "https://www.youtube.com/watch?v=ErLjmovOrcQ",
         "parts": [
             {
                 "name": "The Favorite Melody",
@@ -102,6 +103,7 @@ data = [
     {
         "name": "Freedom 2040 (Band)",
         "ensemble_type": "Band",
+        "video": "https://www.youtube.com/watch?v=rrdimNIWhAw",
         "accompaniment": "accompaniments/Freedom_2040_-_Accompaniment.mp3",
         "parts": [
             {
@@ -135,6 +137,7 @@ data = [
     {
         "name": "Freedom 2040 (Orchestra)",
         "ensemble_type": "Orchestra",
+        "video": "https://www.youtube.com/watch?v=rrdimNIWhAw",
         "accompaniment": "accompaniments/Freedom_2040_-_Accompaniment.mp3",
         "parts": [
             {
@@ -162,6 +165,7 @@ data = [
     {
         "name": "Down by the Riverside",
         "ensemble_type": "Band",
+        "video": "https://www.youtube.com/watch?v=8Z32Spi1amQ",
         "accompaniment": "accompaniments/Down_by_the_Riverside_-_Accompaniment.mp3",
         "parts": [
             {
@@ -195,6 +199,7 @@ data = [
     {
         "name": "Deep River",
         "ensemble_type": "Band",
+        "video": "https://www.youtube.com/watch?v=8Z32Spi1amQ",
         "accompaniment": "accompaniments/Deep_River_-_Accompaniment.mp3",
         "parts": [
             {
@@ -228,6 +233,7 @@ data = [
     {
         "name": "I Want to be Ready",
         "ensemble_type": "Band",
+        "video": "https://www.youtube.com/watch?v=8Z32Spi1amQ",
         "accompaniment": "accompaniments/I_Want_to_be_Ready_-_Accompaniment.mp3",
         "parts": [
             {

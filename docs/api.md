@@ -425,3 +425,7 @@ curl -v \
 -H 'Authorization: Token d0c5a7bf9508026cab574bf149785caa52bb069b' \
 -d "slug=testing-newb-course" \
 http://localhost:8000/api/courses/testing-new-course/ | jq '.'
+
+curl -v \
+-H 'Authorization: Token 13e8379f4bfb235e218b1452df97fc315707d8f0' \
+http://localhost:8000/api/courses/really-no-instruments/grades/

@@ -118,10 +118,11 @@ class PieceCreateSerializer(serializers.ModelSerializer):
     # )
     # accompaniment = serializers.FileField(allow_empty_file=True, allow_null=True)
     accompaniment = serializers.CharField(allow_null=True, allow_blank=True)
+    video = serializers.CharField(allow_null=True, allow_blank=True, required=False)
 
     class Meta:
         model = Piece
-        fields = ["name", "ensemble_type", "parts", "accompaniment"]
+        fields = ["name", "ensemble_type", "parts", "accompaniment", "video"]
 
     def create(self, validated_data):
         print("\n\n\n\n")
