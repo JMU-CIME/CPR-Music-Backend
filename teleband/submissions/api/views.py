@@ -90,3 +90,6 @@ class TeacherSubmissionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSe
 class GradeViewSet(ModelViewSet):
     queryset = Grade.objects.all()
     serializer_class = GradeSerializer
+
+    def get_queryset(self, *args, **kwargs):
+        return Grade.objects.filter(student_submission__assignment__enrollment__course__slug=self.kwargs["course_slug_slug"])
