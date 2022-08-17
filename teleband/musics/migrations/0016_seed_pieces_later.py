@@ -8,6 +8,7 @@ from teleband.musics.api.serializers import *
 data = {
     "name": "Air for Band",
     "ensemble_type": "Band",
+    "accompaniment": "accompaniments/Air_for_Band_Accompaniment.mp3",
     "parts": [
         {
             "name": "Air for Band Melody",

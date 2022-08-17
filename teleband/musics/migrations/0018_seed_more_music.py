@@ -9,6 +9,7 @@ data = [
     {
         "name": "Celebration for a New Day",
         "ensemble_type": "Band",
+        "accompaniment": "accompaniments/Celebration_for_a_New_Day_Accompaniment.mp3",
         "parts": [
             {
                 "name": "Celebration for a New Day Melody",
@@ -41,6 +42,7 @@ data = [
     {
         "name": "America the Beautiful",
         "ensemble_type": "Band",
+        "accompaniment": "accompaniments/America_the_Beautiful_Accompaniment.mp3",
         "parts": [
             {
                 "name": "America the Beautiful Melody",
@@ -73,6 +75,7 @@ data = [
     {
         "name": "The Favorite",
         "ensemble_type": "Orchestra",
+        # "accompaniment": "accompaniments/The_Favorite_Accompaniment.mp3",
         "parts": [
             {
                 "name": "The Favorite Melody",
@@ -99,6 +102,7 @@ data = [
     {
         "name": "Freedom 2040 (Band)",
         "ensemble_type": "Band",
+        "accompaniment": "accompaniments/Freedom_2040_-_Accompaniment.mp3",
         "parts": [
             {
                 "name": "Freedom 2040 (Band) Melody",
@@ -131,6 +135,7 @@ data = [
     {
         "name": "Freedom 2040 (Orchestra)",
         "ensemble_type": "Orchestra",
+        "accompaniment": "accompaniments/Freedom_2040_-_Accompaniment.mp3",
         "parts": [
             {
                 "name": "Freedom 2040 (Orchestra) Melody",
@@ -157,6 +162,7 @@ data = [
     {
         "name": "Down by the Riverside",
         "ensemble_type": "Band",
+        "accompaniment": "accompaniments/Down_by_the_Riverside_-_Accompaniment.mp3",
         "parts": [
             {
                 "name": "Down by the Riverside Melody",
@@ -189,6 +195,7 @@ data = [
     {
         "name": "Deep River",
         "ensemble_type": "Band",
+        "accompaniment": "accompaniments/Deep_River_-_Accompaniment.mp3",
         "parts": [
             {
                 "name": "Deep River Melody",
@@ -221,6 +228,7 @@ data = [
     {
         "name": "I Want to be Ready",
         "ensemble_type": "Band",
+        "accompaniment": "accompaniments/I_Want_to_be_Ready_-_Accompaniment.mp3",
         "parts": [
             {
                 "name": "I Want to be Ready Melody",
@@ -686,6 +694,19 @@ flatios = {
         },
     },
 }
+
+def update_site_forward(apps, schema_editor):
+    Piece = apps.get_model("musics", "Piece")
+    if Piece.objects.filter(name=data[0]["name"]).exists():
+        return
+
+    for piece in data:
+        for part in piece["parts"]:
+            for t in part["transpositions"]:
+                t["flatio"] = json.dumps(flatios[part["name"]][t["transposition"]])
+        serializer = PieceCreateSerializer(data=piece)
+        serializer.is_valid()
+        serializer.create(serializer.validated_data)
 
 class Migration(migrations.Migration):
 
