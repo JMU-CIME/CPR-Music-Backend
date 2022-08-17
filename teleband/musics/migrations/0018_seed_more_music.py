@@ -75,7 +75,7 @@ data = [
     {
         "name": "The Favorite",
         "ensemble_type": "Orchestra",
-        # "accompaniment": "accompaniments/The_Favorite_Accompaniment.mp3",
+        "accompaniment": "",
         "parts": [
             {
                 "name": "The Favorite Melody",

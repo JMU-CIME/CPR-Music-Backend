@@ -27,23 +27,28 @@ class PieceSerializer(serializers.ModelSerializer):
             "audio",
             "date_composed",
             "ensemble_type",
-            "accompaniment"
+            "accompaniment",
         ]
+
 
 class TranspositionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transposition
         fields = ["id", "name"]
 
+
 class PartTranspositionSimpleSerializer(serializers.ModelSerializer):
     transposition = TranspositionSerializer()
+
     class Meta:
         model = PartTransposition
         fields = ["part", "transposition", "flatio"]
 
+
 class PartSerializer(serializers.ModelSerializer):
     piece = PieceSerializer()
     transpositions = PartTranspositionSimpleSerializer(many=True)
+
     class Meta:
         model = Part
         fields = ["name", "piece", "transpositions"]
@@ -103,12 +108,25 @@ class PartCreateSerializer(serializers.ModelSerializer):
 class PieceCreateSerializer(serializers.ModelSerializer):
     parts = PartCreateSerializer(many=True)
     ensemble_type = GenericNameSerializer(model_cls=EnsembleType)
+    # accompaniment = serializers.FilePathField(
+    #     path="/Users/tgm/dev/CPR-Music-Backend/teleband/media/",
+    #     recursive=True,
+    #     required=False,
+    #     allow_blank=True,
+    #     allow_folders=True,
+    #     allow_files=True
+    # )
+    # accompaniment = serializers.FileField(allow_empty_file=True, allow_null=True)
+    accompaniment = serializers.CharField(allow_null=True, allow_blank=True)
 
     class Meta:
         model = Piece
-        fields = ["name", "ensemble_type", "parts"]
+        fields = ["name", "ensemble_type", "parts", "accompaniment"]
 
     def create(self, validated_data):
+        print("\n\n\n\n")
+        print(validated_data)
+        print("\n\n\n\n")
         parts_data = validated_data.pop("parts")
         piece = Piece.objects.create(**validated_data)
 
