@@ -33,7 +33,7 @@ from teleband.users.api.serializers import UserSerializer
 
 from teleband.courses.models import Enrollment, Course
 from teleband.assignments.models import Assignment, Activity
-from teleband.musics.models import Piece, Part
+from teleband.musics.models import PartType, Piece, Part
 from teleband.users.models import Role
 from teleband.utils.permissions import IsTeacher
 
@@ -265,11 +265,38 @@ class CourseViewSet(
             )
 
         assignments = []
-        for activity in Activity.objects.all():
+
+        # FIXME: What follows is a hack to get around the facts that:
+        # 1. We don't have a way to indicate that some activity types are only available to certain pieces.
+        # 2. we don't have a way for the same activity on different types to have differing instructions.
+        defaults = [
+            "Creativity",
+            "Reflection",
+            "Melody",
+            "Bassline",
+        ]
+        connects = {
+            "The Favorite": "Connect Benjamin",
+            "Freedom 2040 (Band)": "Connect Green",
+            "Freedom 2040 (Orchestra)": "Connect Green",
+            "Down by the Riverside": "Connect Danyew",
+            "Deep River": "Connect Danyew",
+            "I Want to be Ready": "Connect Danyew",
+        }
+
+        query_type_names = defaults.copy()
+        if piece.name in connects:
+            query_type_names.append(connects[piece.name])
+        for activity in Activity.objects.filter(
+            activity_type__name__in=query_type_names
+        ):
             # Get this piece’s part for this kind of activity
             kwargs = {"piece": piece}
-            if activity.part_type:
+            if activity.part_type and piece.parts.filter(part_type=activity.part_type).exists():
                 kwargs["part_type"] = activity.part_type
+            # TODO: should we have an else for when it's null? I think so, here it is.
+            else:
+                kwargs["part_type"] = PartType.objects.get(name="Melody")
             part = Part.objects.get(**kwargs)
             for e in Enrollment.objects.filter(course=course, role__name="Student"):
                 assignments.append(

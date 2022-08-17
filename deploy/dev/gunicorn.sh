@@ -1,10 +1,14 @@
 #!/bin/bash
 
-NAME="dev_api_teleband"                                     # Name of the application
-DJANGODIR=/home/deploy/dev/CPR-Music-Backend                             # Django project directory
-SOCKFILE=/home/deploy/dev/CPR-Music-Backend/deploy/dev/asgi.sock # we will communicte using this unix socket
-USER=deploy                                             # the user to run as
-GROUP=deploy                                           # the group to run as
+NAME="dev_api_musiccpr"                                     # Name of the application
+DJANGODIR=/home/ec2-user/dev-versions/live                             # Django project directory
+#SOCKFILE=/home/ec2-user/dev-versions/live/deploy/dev/asgi.sock # we will communicte using this unix socket
+#SOCKFILE=/run/django/asgi.sock # we will communicate using this unix socket
+SOCKFILE=/home/ec2-user/socks/dev/asgi.sock
+#USER=nginx                                             # the user to run as
+USER=ec2-user                                             # the user to run as
+GROUP=ec2-user                                           # the group to run as
+#GROUP=nginx                                           # the group to run as
 NUM_WORKERS=4                                           # how many worker processes should Gunicorn spawn
 DJANGO_SETTINGS_MODULE=config.settings.production       # which settings file should Django use
 DJANGO_ASGI_MODULE=config.asgi                          # WSGI module name
@@ -13,9 +17,9 @@ echo "Starting $NAME as `whoami`"
 
 # Activate the virtual environment
 cd $DJANGODIR
-source /home/deploy/dev/venv/bin/activate
+source /home/ec2-user/venv-dev/bin/activate
 export DJANGO_READ_DOT_ENV_FILE=True
-export DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+export DJANGO_SETTINGS_MODULE=config.settings.production
 export PYTHONPATH=$DJANGODIR:$PYTHONPATH
 
 # Start your Django Unicorn
