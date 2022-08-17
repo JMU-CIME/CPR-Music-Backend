@@ -52,6 +52,12 @@ Moved to [settings](http://cookiecutter-django.readthedocs.io/en/latest/settings
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
+- To create a Teacher:
+        1. use the admin pages
+        1. create a user
+        1. edit that user and select an instrument for them
+        1. add them to the Teacher group
+
 ### Type checks
 
 Running type checks with mypy:
