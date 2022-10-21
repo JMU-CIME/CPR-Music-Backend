@@ -105,3 +105,14 @@ Now you have your own mail server running locally, ready to receive whatever you
 ## Deployment
 
 The following details how to deploy this application.
+1. tag the version `git tag <whatever, e.g. v0.2.2>`
+1. push the tag `git push origin <whatever, e.g. v0.2.2>`
+1. on the server, get to the main repo root e.g. `cd ~/MusicCPRDev`
+1. pull on server `git pull`
+1. checkout a new worktree for the recently pushed/fetched/tagged version `git worktree add ../dev-versions/v0.2.2 v0.2.2`
+1. cd ~/dev-versions/v0.2.2/ 
+1. source ~/venv-dev/bin/activate
+<!-- 1. pip install -r requirements/production.txt # maybe don't need this because no new requirements? -->
+1. stop old version `sudo supervisorctl stop dev_api_musiccpr`
+1. change symlink `cd ~/dev-versions; rm live; ln -s /home/ec2-user/dev-versions/v0.2.2 live`
+1. sudo supervisorctl stop dev_api_musiccpr
