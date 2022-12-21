@@ -111,8 +111,38 @@ The following details how to deploy this application.
 1. pull on server `git pull`
 1. checkout a new worktree for the recently pushed/fetched/tagged version `git worktree add ../dev-versions/v0.2.2 v0.2.2`
 1. cd ~/dev-versions/v0.2.2/ 
+1. cp ../<prev-version>/.env* .
+1. mkdir logs
 1. source ~/venv-dev/bin/activate
 <!-- 1. pip install -r requirements/production.txt # maybe don't need this because no new requirements? -->
 1. stop old version `sudo supervisorctl stop dev_api_musiccpr`
 1. change symlink `cd ~/dev-versions; rm live; ln -s /home/ec2-user/dev-versions/v0.2.2 live`
-1. sudo supervisorctl stop dev_api_musiccpr
+1. sudo supervisorctl start dev_api_musiccpr
+
+# Renewing SSL Certs (requires creating DNS TXT Entries rn 😕)
+
+# Deploying to Prod first time
+Prefer to have:
+1. same ec2 instance as dev
+1. a different RDS instance (for postgres database)
+1. a different s3 bucket (or path?)
+
+## Creating RDS Instance
+1. use web console. choose postgres, accept defaults, but choose free tier, choose some sort of connectivity thing that goes to the ec2 instance, choose existing security group(s) ("default")
+1. create a user for the app
+        1. connect to new db via psql like `psql postgres://...`
+        1. create user with `CREATE USER youruser WITH ENCRYPTED PASSWORD 'yourpass';`
+1. create database `CREATE DATABASE yourdbname;`
+1. give user privileges `GRANT ALL PRIVILEGES ON DATABASE yourdbname TO youruser;`
+1. copy dev's .env and make new (prod) values.
+        * where to get aws access stuff?
+                1. create IAM user
+                        * permissions policies: `AnyMailSESRecommended`
+                        * go to security credentials tab and `create access key`
+1. create s3 bucket, copy settings from existing bucket
+1. activate venv
+1. pip install -r requirements/production.txt
+1. python manage.py migrate
+1. copy (and update) nginx fe and be configs from dev for prod
+1. copy (and update) supervisor config from dev for prod see: `/etc/supervisorctl
+1. sudo supervisorctl reread

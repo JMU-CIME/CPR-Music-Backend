@@ -1,5 +1,6 @@
 from .base import *  # noqa
 from .base import env
+import os
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -162,7 +163,7 @@ LOGGING = {
         "applogfile": {
             "level": "DEBUG",
             "class": "logging.handlers.RotatingFileHandler",
-            "filename": os.path.join(DJANGO_ROOT, "logs", "APPNAME.log"),
+            "filename": os.path.join(DJANGO_ROOT, "logs", "musiccpr.log"),
             "maxBytes": 1024 * 1024 * 15,  # 15MB
             "backupCount": 10,
         },
