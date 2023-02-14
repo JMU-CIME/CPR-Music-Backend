@@ -274,6 +274,8 @@ class CourseViewSet(
             "Reflection",
             "Melody",
             "Bassline",
+            "MelodyPost",
+            "BasslinePost",
         ]
         connects = {
             "The Favorite": "Connect Benjamin",

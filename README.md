@@ -112,7 +112,7 @@ The following details how to deploy this application.
 1. checkout a new worktree for the recently pushed/fetched/tagged version `git worktree add ../dev-versions/v0.2.2 v0.2.2`
 1. cd ~/dev-versions/v0.2.2/ 
 1. cp ../<prev-version>/.env* .
-1. mkdir logs
+<!-- 1. mkdir logs -->
 1. source ~/venv-dev/bin/activate
 <!-- 1. pip install -r requirements/production.txt # maybe don't need this because no new requirements? -->
 1. stop old version `sudo supervisorctl stop dev_api_musiccpr`
@@ -120,7 +120,8 @@ The following details how to deploy this application.
 1. sudo supervisorctl start dev_api_musiccpr
 
 # Renewing SSL Certs (requires creating DNS TXT Entries rn 😕)
-
+1. maybe this is the command? 
+    * `sudo certbot certonly --manual --server https://acme-v02.api.letsencrypt.org/directory --preferred-challenges dns-01 -d "*.musiccpr.org,musiccpr.org"`
 # Deploying to Prod first time
 Prefer to have:
 1. same ec2 instance as dev
