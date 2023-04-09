@@ -3,7 +3,7 @@ from django.conf import settings
 
 from teleband.courses.models import Course, Enrollment
 from teleband.instruments.models import Instrument
-from teleband.musics.models import PartType, Part
+from teleband.musics.models import PartType, Part, Piece
 
 
 class ActivityCategory(models.Model):
@@ -57,3 +57,43 @@ class Assignment(models.Model):
 
     def __str__(self):
         return f"[{self.enrollment.user.username}] {self.activity} {self.part.piece}"
+
+class PiecePlan(models.Model):
+
+    name = models.CharField(max_length=255)
+    ordered = models.BooleanField(default=False)
+    activities = models.ManyToManyField(Activity, through="PiecePlanActivity")
+    piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
+    
+class PiecePlanActivity(models.Model):
+
+    piece_plan = models.ForeignKey(PiecePlan, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ["piece_plan", "activity"]
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.piece_plan.name}: {self.activity}"
+
+class Curriculum(models.Model):
+
+    name = models.CharField(max_length=255)
+    piece_plans = models.ManyToManyField(PiecePlan, through="CurriculumPiecePlan")
+    course = models.ForeignKey(Course, on_delete=models.PROTECT)
+
+class CurriculumPiecePlan(models.Model):
+
+    curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
+    piece_plan = models.ForeignKey(PiecePlan, on_delete=models.CASCADE)
+    order = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = ["curriculum", "piece_plan"]
+        ordering = ["order"]
+
+    def __str__(self):
+        return f"{self.curriculum.name}: {self.piece_plan.name}"
+

@@ -275,3 +275,4 @@ teleband/media/
 
 .pytest_cache/
 .env
+db.sqlite
