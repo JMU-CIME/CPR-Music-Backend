@@ -22,6 +22,7 @@ class ActivityType(models.Model):
 
     name = models.CharField(unique=True, max_length=255)
     category = models.ForeignKey(ActivityCategory, on_delete=models.PROTECT)
+    number_of_submissions = models.PositiveIntegerField(default=1)
 
     class Meta:
         verbose_name = "Activity Type"
@@ -61,11 +62,10 @@ class Assignment(models.Model):
 class PiecePlan(models.Model):
 
     name = models.CharField(max_length=255)
-    ordered = models.BooleanField(default=False)
-    activities = models.ManyToManyField(Activity, through="PiecePlanActivity")
+    activities = models.ManyToManyField(Activity, through="PlannedActivity")
     piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
     
-class PiecePlanActivity(models.Model):
+class PlannedActivity(models.Model):
 
     piece_plan = models.ForeignKey(PiecePlan, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
@@ -81,10 +81,11 @@ class PiecePlanActivity(models.Model):
 class Curriculum(models.Model):
 
     name = models.CharField(max_length=255)
-    piece_plans = models.ManyToManyField(PiecePlan, through="CurriculumPiecePlan")
+    ordered = models.BooleanField(default=False)
+    piece_plans = models.ManyToManyField(PiecePlan, through="CurriculumEntry")
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
 
-class CurriculumPiecePlan(models.Model):
+class CurriculumEntry(models.Model):
 
     curriculum = models.ForeignKey(Curriculum, on_delete=models.CASCADE)
     piece_plan = models.ForeignKey(PiecePlan, on_delete=models.CASCADE)

@@ -32,7 +32,7 @@ from teleband.assignments.api.serializers import AssignmentSerializer
 from teleband.users.api.serializers import UserSerializer
 
 from teleband.courses.models import Enrollment, Course
-from teleband.assignments.models import Assignment, Activity
+from teleband.assignments.models import Assignment, Activity, PiecePlan
 from teleband.musics.models import PartType, Piece, Part
 from teleband.users.models import Role
 from teleband.utils.permissions import IsTeacher
@@ -228,6 +228,69 @@ class CourseViewSet(
             course_enrollments, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+    
+    @action(detail=True, methods=["post"])
+    def assign_piece_plan(self, request, **kwargs):
+        parsed = request.data
+        if "piece_plan_id" not in parsed:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Missing piece_plan_id in POST data"},
+            )
+        
+        try:
+            piece_plan = PiecePlan.objects.get(pk=parsed["piece_plan_id"])
+        except PiecePlan.DoesNotExist:
+            logger.info(
+                "Attempt to assign non-existent piece plan {}".format(parsed["piece_plan_id"])
+            )
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        course = self.get_object()
+
+        missing_instruments = Enrollment.objects.filter(
+            Q(instrument=None) & Q(user__instrument=None),
+            course=course,
+            role__name="Student",
+        )
+        if missing_instruments.exists():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "message": "Some users and their enrollments have no instrument",
+                    "enrollments": EnrollmentSerializer(
+                        missing_instruments, many=True, context={"request": request}
+                    ).data,
+                },
+            )
+
+        assignments = []
+
+        piece = piece_plan.piece
+        for activity in piece_plan.activities.all():
+            # Get this piece’s part for this kind of activity
+            kwargs = {"piece": piece}
+            if activity.part_type and piece.parts.filter(part_type=activity.part_type).exists():
+                kwargs["part_type"] = activity.part_type
+            # TODO: should we have an else for when it's null? I think so, here it is.
+            else:
+                kwargs["part_type"] = PartType.objects.get(name="Melody")
+            part = Part.objects.get(**kwargs)
+            for e in Enrollment.objects.filter(course=course, role__name="Student"):
+                assignments.append(
+                    Assignment.objects.create(
+                        activity=activity,
+                        enrollment=e,
+                        instrument=e.instrument if e.instrument else e.user.instrument,
+                        part=part,
+                    )
+                )
+
+        serializer = AssignmentSerializer(
+            assignments, many=True, context={"request": request}
+        )
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
 
     @action(detail=True, methods=["post"])
     def assign(self, request, **kwargs):

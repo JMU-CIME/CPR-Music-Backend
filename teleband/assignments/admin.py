@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import ActivityCategory, ActivityType, Activity, Assignment
+from .models import ActivityCategory, ActivityType, Activity, Assignment, PiecePlan, PlannedActivity
 
 
 @admin.register(ActivityCategory)
@@ -43,3 +43,26 @@ class AssignmentAdmin(VersionAdmin):
         "created_at",
     )
     date_hierarchy = "created_at"
+
+@admin.register(PiecePlan)
+class PiecePlanAdmin(VersionAdmin):
+    list_display = (
+        "id", 
+        "piece", 
+    )
+    list_filter = (
+        "piece",
+    )
+    raw_id_fields = ("activities",)
+
+@admin.register(PlannedActivity)
+class PlannedActivityAdmin(VersionAdmin):
+    list_display = (
+        "id", 
+        "piece_plan", 
+        "activity",
+    )
+    list_filter = (
+        "piece_plan",
+        "activity",
+    )
