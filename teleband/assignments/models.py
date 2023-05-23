@@ -22,7 +22,7 @@ class ActivityType(models.Model):
 
     name = models.CharField(unique=True, max_length=255)
     category = models.ForeignKey(ActivityCategory, on_delete=models.PROTECT)
-    number_of_submissions = models.PositiveIntegerField(default=1)
+    
 
     class Meta:
         verbose_name = "Activity Type"
@@ -37,6 +37,7 @@ class Activity(models.Model):
     activity_type = models.ForeignKey(ActivityType, on_delete=models.PROTECT)
     part_type = models.ForeignKey(PartType, null=True, on_delete=models.PROTECT)
     body = models.TextField()
+    number_of_submissions = models.PositiveIntegerField(default=1)
 
     class Meta:
         verbose_name = "Activity"
