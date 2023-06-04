@@ -63,17 +63,18 @@ class PiecePlan(models.Model):
 
 class Assignment(models.Model):
 
-    activity = models.ForeignKey(Activity, on_delete=models.PROTECT)
+    # activity = models.ForeignKey(Activity, on_delete=models.PROTECT) DELETED
     enrollment = models.ForeignKey(Enrollment, on_delete=models.PROTECT)
     part = models.ForeignKey(Part, on_delete=models.PROTECT)
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
-    piece_plan = models.ForeignKey(PiecePlan, null=True, blank=True, on_delete=models.PROTECT)
+    piece_plan = models.ForeignKey(PiecePlan, null=False, blank=False, 
+                                   on_delete=models.PROTECT, default=1)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"[{self.enrollment.user.username}] {self.activity} {self.part.piece}"
+        return f"[{self.enrollment.user.username}] {self.piece_plan.name}"
     
 class PlannedActivity(models.Model):
 
