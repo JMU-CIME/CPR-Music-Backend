@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='submission',
             name='planned_activity',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='assignments.plannedactivity'),
+            field=models.ForeignKey(null=True, blank=True, on_delete=django.db.models.deletion.PROTECT, to='assignments.plannedactivity'),
         ),
     ]

@@ -57,6 +57,9 @@ class PiecePlan(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Piece Plan"
+
 
 class Assignment(models.Model):
 
@@ -81,6 +84,8 @@ class PlannedActivity(models.Model):
     class Meta:
         unique_together = ["piece_plan", "activity"]
         ordering = ["order"]
+        verbose_name = "Planned Activity"
+        verbose_name_plural = "Planned Activities"
 
     def __str__(self):
         return f"{self.piece_plan.name}: {self.activity}"
@@ -103,6 +108,8 @@ class CurriculumEntry(models.Model):
     class Meta:
         unique_together = ["curriculum", "piece_plan"]
         ordering = ["order"]
+        verbose_name = "Curriculum Entry"
+        verbose_name_plural = "Curriculum Entries"
 
     def __str__(self):
         return f"{self.curriculum.name}: {self.piece_plan.name}"
