@@ -27,6 +27,7 @@ class ActivityAdmin(VersionAdmin):
 class AssignmentAdmin(VersionAdmin):
     list_display = (
         "id",
+        "activity",
         "enrollment",
         "part",
         "deadline",
@@ -34,6 +35,7 @@ class AssignmentAdmin(VersionAdmin):
         "created_at",
     )
     list_filter = (
+        "activity",
         "enrollment",
         "part",
         "deadline",
