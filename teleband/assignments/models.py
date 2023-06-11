@@ -47,17 +47,6 @@ class Activity(models.Model):
         return f"{self.activity_type}: {self.part_type}"
 
 
-class PiecePlan(models.Model):
-
-    name = models.CharField(max_length=255)
-    activities = models.ManyToManyField(Activity, through="PlannedActivity")
-    piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
-    ordered = models.BooleanField(default=False)
-
-    def __str__(self):
-        return self.name
-
-
 class Assignment(models.Model):
 
     activity = models.ForeignKey(Activity, on_delete=models.PROTECT)
@@ -65,12 +54,17 @@ class Assignment(models.Model):
     part = models.ForeignKey(Part, on_delete=models.PROTECT)
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
-    piece_plan = models.ForeignKey(PiecePlan, null=True, blank=True, on_delete=models.PROTECT)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"[{self.enrollment.user.username}] {self.activity} {self.part.piece}"
+
+class PiecePlan(models.Model):
+
+    name = models.CharField(max_length=255)
+    activities = models.ManyToManyField(Activity, through="PlannedActivity")
+    piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
     
 class PlannedActivity(models.Model):
 
@@ -85,14 +79,12 @@ class PlannedActivity(models.Model):
     def __str__(self):
         return f"{self.piece_plan.name}: {self.activity}"
 
-
 class Curriculum(models.Model):
 
     name = models.CharField(max_length=255)
     ordered = models.BooleanField(default=False)
     piece_plans = models.ManyToManyField(PiecePlan, through="CurriculumEntry")
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
-
 
 class CurriculumEntry(models.Model):
 

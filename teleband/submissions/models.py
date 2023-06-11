@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-from teleband.assignments.models import Assignment, PlannedActivity
+from teleband.assignments.models import Assignment
 
 
 class Grade(models.Model):
@@ -35,7 +35,6 @@ class Submission(models.Model):
     index = models.PositiveIntegerField(default=0)
     submitted = models.DateTimeField(auto_now_add=True)
     content = models.TextField(blank=True)
-    planned_activity = models.ForeignKey(PlannedActivity, null=True, on_delete=models.PROTECT)
 
     def __str__(self):
         return f"{self.assignment} ({self.submitted})"
