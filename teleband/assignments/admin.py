@@ -44,22 +44,15 @@ class AssignmentAdmin(VersionAdmin):
     )
     date_hierarchy = "created_at"
 
-class PiecePlanActivityInline(admin.TabularInline):
-    model = PlannedActivity
-    extra = 0
-    ordering = ("order",)
-
 @admin.register(PiecePlan)
 class PiecePlanAdmin(VersionAdmin):
     list_display = (
         "id", 
-        "name",
         "piece", 
     )
     list_filter = (
-        ("piece", admin.RelatedOnlyFieldListFilter),
+        "piece",
     )
-    inlines = (PiecePlanActivityInline,)
     raw_id_fields = ("activities",)
 
 @admin.register(PlannedActivity)
@@ -71,6 +64,5 @@ class PlannedActivityAdmin(VersionAdmin):
     )
     list_filter = (
         "piece_plan",
-        ("activity", admin.RelatedOnlyFieldListFilter),
-        ("piece_plan__piece", admin.RelatedOnlyFieldListFilter),
+        "activity",
     )

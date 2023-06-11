@@ -7,8 +7,7 @@ from .models import Submission, SubmissionAttachment, Grade
 @admin.register(Submission)
 class SubmissionAdmin(VersionAdmin):
     list_display = ("id", "assignment", "submitted", "content")
-    list_filter = (("planned_activity__piece_plan__piece", admin.RelatedOnlyFieldListFilter),
-                   "submitted")
+    list_filter = ("assignment", "submitted")
 
 
 @admin.register(SubmissionAttachment)
