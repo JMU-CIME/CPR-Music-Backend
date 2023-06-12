@@ -283,6 +283,7 @@ class CourseViewSet(
                         enrollment=e,
                         instrument=e.instrument if e.instrument else e.user.instrument,
                         part=part,
+                        piece_plan=piece_plan,
                     )
                 )
 
