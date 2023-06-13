@@ -24,7 +24,6 @@ class ActivitySerializer(serializers.ModelSerializer):
         model = Activity
         fields = ["activity_type", "part_type", "body"]
 
-
 class AssignmentSerializer(serializers.ModelSerializer):
     activity = ActivitySerializer()
     instrument = InstrumentSerializer()
@@ -36,6 +35,34 @@ class AssignmentSerializer(serializers.ModelSerializer):
         model = Assignment
         # fields = ["activity", "deadline", "instrument", "id", "url"]
         fields = ["activity", "deadline", "instrument", "part", "id", "enrollment", "submissions"]
+
+        extra_kwargs = {
+            "url": {"view_name": "api:assignment-detail", "lookup_field": "id"},
+        }
+
+
+
+class AssignmentViewSetSerializer(serializers.ModelSerializer):
+    activity = serializers.PrimaryKeyRelatedField(queryset=Activity.objects.all())
+    activity_type_name = serializers.CharField(source="activity.activity_type.name", read_only=True)
+    activity_type_category = serializers.CharField(source="activity.activity_type.category.name", read_only=True)
+    part_type = serializers.CharField(source="activity.part_type.name", read_only=True)
+    piece_name = serializers.SlugField(source="part.piece.name", read_only=True)
+    piece_id = serializers.IntegerField(source="part.piece.id", read_only=True)
+    piece_slug = serializers.SlugField(source="part.piece.slug", read_only=True)
+    instrument = serializers.CharField(source="instrument.name", read_only=True)
+    transposition = serializers.CharField(source="instrument.transposition.name", read_only=True)
+    # instrument = InstrumentSerializer()
+    # part = PartSerializer()
+    # enrollment = EnrollmentSerializer()
+    # submissions = SubmissionSerializer(many=True)
+
+    class Meta:
+        model = Assignment
+        # fields = ["activity", "deadline", "instrument", "id", "url"]
+        # fields = ["activity", "deadline", "instrument", "part", "id", "enrollment", "submissions"]
+        fields = ["id", "activity", "activity_type_name", "activity_type_category", "part_type",
+                  "piece_name", "piece_id", "piece_slug", "instrument", "transposition"]
 
         extra_kwargs = {
             "url": {"view_name": "api:assignment-detail", "lookup_field": "id"},

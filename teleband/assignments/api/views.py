@@ -4,7 +4,7 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import AssignmentSerializer, AssignmentInstrumentSerializer
+from .serializers import AssignmentViewSetSerializer, AssignmentInstrumentSerializer, AssignmentSerializer
 from teleband.assignments.api.serializers import ActivitySerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer
 
@@ -40,7 +40,7 @@ class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
 class AssignmentViewSet(
     RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet
 ):
-    serializer_class = AssignmentSerializer
+    serializer_class = AssignmentViewSetSerializer
     queryset = Assignment.objects.all()
     lookup_field = "id"
     permission_classes = [TeacherUpdate]
@@ -48,6 +48,8 @@ class AssignmentViewSet(
     def get_serializer_class(self):
         if self.action in ["update", "partial_update"]:
             return AssignmentInstrumentSerializer
+        elif self.action == "retrieve":
+            return AssignmentSerializer
         return self.serializer_class
 
     @action(detail=True)
@@ -71,6 +73,6 @@ class AssignmentViewSet(
         if role.name == "Student":
             return Assignment.objects.filter(
                 enrollment__course=course, enrollment__user=self.request.user
-            ).select_related("activity", "instrument", "part", "part__piece")
+            ) #.select_related("activity", "instrument", "part", "part__piece")
         if role.name == "Teacher":
             return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "part", "part__piece")
