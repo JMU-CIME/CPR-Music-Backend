@@ -44,12 +44,12 @@ class AssignmentSerializer(serializers.ModelSerializer):
 
 class AssignmentViewSetSerializer(serializers.ModelSerializer):
     activity = serializers.PrimaryKeyRelatedField(queryset=Activity.objects.all())
-    activity_type_name = serializers.CharField(source="activity.activity_type.name", read_only=True)
-    activity_type_category = serializers.CharField(source="activity.activity_type.category.name", read_only=True)
+    activity_type_name = serializers.CharField(source="activity.activity_type_name", read_only=True)
+    activity_type_category = serializers.CharField(source="activity.category", read_only=True)
     part_type = serializers.CharField(source="activity.part_type.name", read_only=True)
-    piece_name = serializers.SlugField(source="part.piece.name", read_only=True)
-    piece_id = serializers.IntegerField(source="part.piece.id", read_only=True)
-    piece_slug = serializers.SlugField(source="part.piece.slug", read_only=True)
+    piece_name = serializers.SlugField(source="piece.name", read_only=True)
+    piece_id = serializers.IntegerField(source="piece.id", read_only=True)
+    piece_slug = serializers.SlugField(source="piece.slug", read_only=True)
     instrument = serializers.CharField(source="instrument.name", read_only=True)
     transposition = serializers.CharField(source="instrument.transposition.name", read_only=True)
     # instrument = InstrumentSerializer()

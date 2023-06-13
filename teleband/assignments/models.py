@@ -38,6 +38,8 @@ class Activity(models.Model):
     part_type = models.ForeignKey(PartType, null=True, on_delete=models.PROTECT)
     body = models.TextField()
     number_of_submissions = models.PositiveIntegerField(default=1)
+    activity_type_name = models.CharField(max_length=255, null=True, blank=True)
+    category = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = "Activity"
@@ -62,6 +64,7 @@ class Assignment(models.Model):
     deadline = models.DateField(null=True, blank=True)
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
     piece_plan = models.ForeignKey(PiecePlan, on_delete=models.PROTECT, null=True, blank=True)
+    piece = models.ForeignKey(Piece, on_delete=models.PROTECT, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
