@@ -32,7 +32,7 @@ from teleband.assignments.api.serializers import AssignmentSerializer
 from teleband.users.api.serializers import UserSerializer
 
 from teleband.courses.models import Enrollment, Course
-from teleband.assignments.models import Assignment, Activity, PiecePlan
+from teleband.assignments.models import Assignment, Activity, PiecePlan, Curriculum
 from teleband.musics.models import PartType, Piece, Part
 from teleband.users.models import Role
 from teleband.utils.permissions import IsTeacher
@@ -380,6 +380,73 @@ class CourseViewSet(
             assignments, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
+    
+    @action(detail=True, methods=["post"])
+    def assign_curriculum(self, request, **kwargs):
+        parsed = request.data
+        if "curriculum_id" not in parsed:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Missing curriculum_id in POST data"},
+            )
+        
+        try:
+            curriculum = Curriculum.objects.get(pk=parsed["curriculum_id"])
+        except Curriculum.DoesNotExist:
+            logger.info(
+                "Attempt to assign non-existent curriculum {}".format(parsed["curriculum_id"])
+            )
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        course = self.get_object()
+
+        missing_instruments = Enrollment.objects.filter(
+            Q(instrument=None) & Q(user__instrument=None),
+            course=course,
+            role__name="Student",
+        )
+        if missing_instruments.exists():
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "message": "Some users and their enrollments have no instrument",
+                    "enrollments": EnrollmentSerializer(
+                        missing_instruments, many=True, context={"request": request}
+                    ).data,
+                },
+            )
+
+        assignments = []
+
+        # for each piece plan in the curriculum, assign all planned activities
+        # in the piece plan.
+        for piece_plan in curriculum.piece_plans.all():
+            piece = piece_plan.piece
+            for activity in piece_plan.activities.all():
+                # Get this piece’s part for this kind of activity
+                kwargs = {"piece": piece}
+                if activity.part_type and piece.parts.filter(part_type=activity.part_type).exists():
+                    kwargs["part_type"] = activity.part_type
+                else:
+                    kwargs["part_type"] = PartType.objects.get(name="Melody")
+                part = Part.objects.get(**kwargs)
+                for e in Enrollment.objects.filter(course=course, role__name="Student"):
+                    assignments.append(
+                        Assignment.objects.create(
+                            activity=activity,
+                            enrollment=e,
+                            instrument=e.instrument if e.instrument else e.user.instrument,
+                            part=part,
+                            piece_plan=piece_plan,
+                            piece=piece,
+                        )
+                    )
+
+        serializer = AssignmentSerializer(
+            assignments, many=True, context={"request": request}
+        )
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
+
 
     @action(detail=True, methods=["post"])
     def unassign(self, request, **kwargs):
