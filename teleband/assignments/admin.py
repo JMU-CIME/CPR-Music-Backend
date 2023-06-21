@@ -1,7 +1,9 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import ActivityCategory, ActivityType, Activity, Assignment, PiecePlan, PlannedActivity
+from .models import ActivityCategory, ActivityType, Activity, \
+                    Assignment, Curriculum, CurriculumEntry, \
+                    PiecePlan, PlannedActivity
 
 
 @admin.register(ActivityCategory)
@@ -36,12 +38,12 @@ class AssignmentAdmin(VersionAdmin):
     )
     list_filter = (
         "activity",
-        "enrollment",
         "part",
         "deadline",
         "instrument",
         "created_at",
     )
+    search_fields = ("activity__activity_type__name", "enrollment__user__username")
     date_hierarchy = "created_at"
 
 class PiecePlanActivityInline(admin.TabularInline):
@@ -62,14 +64,35 @@ class PiecePlanAdmin(VersionAdmin):
     inlines = (PiecePlanActivityInline,)
     raw_id_fields = ("activities",)
 
-@admin.register(PlannedActivity)
-class PlannedActivityAdmin(VersionAdmin):
+# @admin.register(PlannedActivity)
+# class PlannedActivityAdmin(VersionAdmin):
+#     list_display = (
+#         "id", 
+#         "piece_plan", 
+#         "activity",
+#         "order",
+#     )
+#     list_filter = (
+#         "piece_plan",
+#         "activity",
+#     )
+
+class CurriculumEntryInline(admin.TabularInline):
+    model = CurriculumEntry
+    extra = 0
+    ordering = ("order",)
+
+@admin.register(Curriculum)
+class CurriculumAdmin(VersionAdmin):
     list_display = (
         "id", 
-        "piece_plan", 
-        "activity",
+        "name",
+        "course",
+        "ordered", 
     )
     list_filter = (
-        "piece_plan",
-        "activity",
+        "course",
+        "ordered",
     )
+    inlines = (CurriculumEntryInline,)
+    raw_id_fields = ("piece_plans",)

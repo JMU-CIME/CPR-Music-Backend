@@ -55,6 +55,9 @@ class PiecePlan(models.Model):
     activities = models.ManyToManyField(Activity, through="PlannedActivity")
     piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return f"{self.name}: {self.piece.name}"
+
 
 class Assignment(models.Model):
 
@@ -80,7 +83,8 @@ class PlannedActivity(models.Model):
 
     class Meta:
         unique_together = ["piece_plan", "activity"]
-        ordering = ["order"]
+        ordering = ["piece_plan__name", "order"]
+        verbose_name_plural = "Planned Activities"
 
     def __str__(self):
         return f"{self.piece_plan.name}: {self.activity}"
@@ -93,6 +97,12 @@ class Curriculum(models.Model):
     piece_plans = models.ManyToManyField(PiecePlan, through="CurriculumEntry")
     course = models.ForeignKey(Course, on_delete=models.PROTECT)
 
+    class Meta:
+        verbose_name = "Curriculum"
+        verbose_name_plural = "Curricula"
+
+    def __str__(self):
+        return f"{self.name}: {self.course.name}"
 
 class CurriculumEntry(models.Model):
 
