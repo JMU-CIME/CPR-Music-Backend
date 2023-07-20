@@ -8,7 +8,7 @@ from .serializers import AssignmentViewSetSerializer, AssignmentInstrumentSerial
 from teleband.assignments.api.serializers import ActivitySerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer
 
-from teleband.assignments.models import Assignment, Activity
+from teleband.assignments.models import Assignment, Activity, AssignmentGroup
 from teleband.courses.models import Course
 from teleband.utils.permissions import IsTeacher
 
@@ -73,6 +73,6 @@ class AssignmentViewSet(
         if role.name == "Student":
             return Assignment.objects.filter(
                 enrollment__course=course, enrollment__user=self.request.user
-            ).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition")
+            ).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
         if role.name == "Teacher":
-            return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition")
+            return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")

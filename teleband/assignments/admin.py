@@ -3,7 +3,7 @@ from reversion.admin import VersionAdmin
 
 from .models import ActivityCategory, ActivityType, Activity, \
                     Assignment, Curriculum, CurriculumEntry, \
-                    PiecePlan, PlannedActivity
+                    PiecePlan, PlannedActivity, AssignmentGroup 
 
 
 @admin.register(ActivityCategory)
@@ -57,12 +57,30 @@ class PiecePlanAdmin(VersionAdmin):
         "id", 
         "name",
         "piece", 
+        "type",
     )
     list_filter = (
         ("piece", admin.RelatedOnlyFieldListFilter),
+        "type",
     )
     inlines = (PiecePlanActivityInline,)
     raw_id_fields = ("activities",)
+
+class AssignmentInline(admin.TabularInline):
+    model = Assignment
+    extra = 0
+    ordering = ("-id",)
+
+@admin.register(AssignmentGroup)
+class AssignmentGroupAdmin(VersionAdmin):
+    list_display = (
+        "id", 
+        "type",
+    )
+    list_filter = (
+        "type",
+    )
+    inlines = (AssignmentInline,)
 
 # @admin.register(PlannedActivity)
 # class PlannedActivityAdmin(VersionAdmin):

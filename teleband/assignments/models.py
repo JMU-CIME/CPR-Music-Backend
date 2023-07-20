@@ -54,9 +54,36 @@ class PiecePlan(models.Model):
     name = models.CharField(max_length=255)
     activities = models.ManyToManyField(Activity, through="PlannedActivity")
     piece = models.ForeignKey(Piece, on_delete=models.PROTECT)
+    type = models.CharField(max_length=255, null=True, blank=True)
+
+    def assign(self, enrollment, instrument, deadline=None):
+        assignments = []
+        piece = self.piece
+        for activity in self.activities.all():
+            # Get this piece’s part for this kind of activity
+            kwargs = {"piece": piece}
+            if activity.part_type and piece.parts.filter(part_type=activity.part_type).exists():
+                kwargs["part_type"] = activity.part_type
+            # TODO: should we have an else for when it's null? I think so, here it is.
+            else:
+                kwargs["part_type"] = PartType.objects.get(name="Melody")
+            part = Part.objects.get(**kwargs)
+            assignments.append(Assignment.objects.create(
+                activity=activity,
+                enrollment=enrollment,
+                part=part,
+                instrument=instrument,
+                piece_plan=self,
+                deadline=deadline,
+                piece=self.piece,
+            ))
+        return assignments
 
     def __str__(self):
-        return f"{self.name}: {self.piece.name}"
+        if self.type:
+            return f"{self.name}: {self.piece.name} ({self.type})"
+        else:
+            return f"{self.name}: {self.piece.name} "
 
 
 class Assignment(models.Model):
@@ -68,11 +95,17 @@ class Assignment(models.Model):
     instrument = models.ForeignKey(Instrument, on_delete=models.PROTECT)
     piece_plan = models.ForeignKey(PiecePlan, on_delete=models.PROTECT, null=True, blank=True)
     piece = models.ForeignKey(Piece, on_delete=models.PROTECT, null=True, blank=True)
+    group = models.ForeignKey("AssignmentGroup", on_delete=models.PROTECT, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"[{self.enrollment.user.username}] {self.activity} {self.part.piece}"
+    
+
+class AssignmentGroup(models.Model):
+
+    type = models.CharField(max_length=255, null=True, blank=True)
     
 
 class PlannedActivity(models.Model):
