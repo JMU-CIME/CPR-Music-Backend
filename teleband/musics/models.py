@@ -61,6 +61,16 @@ class Part(models.Model):
     piece = models.ForeignKey(Piece, related_name="parts", on_delete=models.PROTECT)
     sample_audio = models.FileField(blank=True, upload_to="sample_audio/")
 
+    def for_activity(activity, piece):
+        # Get this piece’s part for this kind of activity
+        kwargs = {"piece": piece}
+        if activity.part_type and piece.parts.filter(part_type=activity.part_type).exists():
+            kwargs["part_type"] = activity.part_type
+        # TODO: should we have an else for when it's null? I think so, here it is.
+        else:
+            kwargs["part_type"] = PartType.objects.get(name="Melody")
+        return Part.objects.get(**kwargs)
+
     def __str__(self):
         return self.name
 

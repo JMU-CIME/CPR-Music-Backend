@@ -270,47 +270,7 @@ class CourseViewSet(
             piece = piece_plan.piece
 
             if piece_plan.type.lower() == "telephone_fixed":
-                num_activities = piece_plan.activities.count()
-                num_enrollments = Enrollment.objects.filter(course=course, role__name="Student").count()
-                if num_enrollments % num_activities != 0:
-                    return Response(
-                        status=status.HTTP_400_BAD_REQUEST,
-                        data={
-                            "message": "Number of students must be a multiple of the number of activities in the piece plan",
-                            "num_enrollments": num_enrollments,
-                            "num_activities": num_activities,
-                        },
-                    )
-                
-                # split the enrollments into groups of num_activities, at random
-                enrollments = list(Enrollment.objects.filter(course=course, role__name="Student"))
-                random.shuffle(enrollments)
-                groups = [enrollments[i:i + num_activities] for i in range(0, len(enrollments), num_activities)]
-                for group in groups:
-                    assignment_group = AssignmentGroup.objects.create(type="telephone_fixed")
-                    group_assignments = []
-                    for (e, a) in zip(group, piece_plan.activities.all()):
-                        # Get this piece’s part for this kind of activity
-                        kwargs = {"piece": piece}
-                        if a.part_type and piece.parts.filter(part_type=a.part_type).exists():
-                            kwargs["part_type"] = a.part_type
-                        # TODO: should we have an else for when it's null? I think so, here it is.
-                        else:
-                            kwargs["part_type"] = PartType.objects.get(name="Melody")
-                        part = Part.objects.get(**kwargs)
-                        group_assignments.append(
-                            Assignment.objects.create(
-                                activity=a,
-                                part=part,
-                                enrollment=e,
-                                instrument=e.instrument if e.instrument else e.user.instrument,
-                                piece_plan=piece_plan,
-                                piece=piece,
-                                group=assignment_group
-                            )
-                        )
-                    assignments += group_assignments
-
+                self.assign_telephone_fixed(course, piece_plan, piece, assignments)
             else:
                 for e in Enrollment.objects.filter(course=course, role__name="Student"):
                     assignments += piece_plan.assign(e, e.instrument if e.instrument else e.user.instrument)
@@ -320,6 +280,53 @@ class CourseViewSet(
             )
             return Response(status=status.HTTP_200_OK, data=serializer.data)
         
+    def assign_telephone_fixed(self, course, piece_plan, piece, assignments):
+        num_activities = piece_plan.activities.count()
+        num_enrollments = Enrollment.objects.filter(course=course, role__name="Student").count()
+        excess_enrollments = num_enrollments % num_activities
+        if num_enrollments < num_activities:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={
+                    "message": "Number of students must be greater than or equal to the number of activities in the piece plan",
+                    "num_enrollments": num_enrollments,
+                    "num_activities": num_activities,
+                },
+            )
+        
+        # split the enrollments into groups of num_activities, at random
+        # and then assign the excess enrollments to the last group
+        enrollments = list(Enrollment.objects.filter(course=course, role__name="Student"))
+        random.shuffle(enrollments)
+        final_group = [] if excess_enrollments == 0 else enrollments[-excess_enrollments:]
+        groups = [enrollments[i:i + num_activities] for i in range(0, len(enrollments) - excess_enrollments, num_activities)]
+    
+        if excess_enrollments != 0:
+            used_enrollments = enrollments[0:len(enrollments) - excess_enrollments]
+            random.shuffle(used_enrollments)
+            final_group += used_enrollments[0:num_activities - excess_enrollments]
+            groups.append(final_group)
+
+        # create an assignment group for each group of enrollments
+        # and then assign each enrollment to an activity in the piece plan
+        # and add the assignment to the assignment group.
+        for group in groups:
+            assignment_group = AssignmentGroup.objects.create(type="telephone_fixed")
+            group_assignments = []
+            for (e, a) in zip(group, piece_plan.activities.all()):
+                part = Part.for_activity(a, piece)
+                group_assignments.append(
+                    Assignment.objects.create(
+                        activity=a,
+                        part=part,
+                        enrollment=e,
+                        instrument=e.instrument if e.instrument else e.user.instrument,
+                        piece_plan=piece_plan,
+                        piece=piece,
+                        group=assignment_group
+                    )
+                )
+            assignments += group_assignments
 
 
     @action(detail=True, methods=["post"])
@@ -385,14 +392,7 @@ class CourseViewSet(
         for activity in Activity.objects.filter(
             activity_type__name__in=query_type_names
         ):
-            # Get this piece’s part for this kind of activity
-            kwargs = {"piece": piece}
-            if activity.part_type and piece.parts.filter(part_type=activity.part_type).exists():
-                kwargs["part_type"] = activity.part_type
-            # TODO: should we have an else for when it's null? I think so, here it is.
-            else:
-                kwargs["part_type"] = PartType.objects.get(name="Melody")
-            part = Part.objects.get(**kwargs)
+            part = Part.for_activity(activity, piece)
             for e in Enrollment.objects.filter(course=course, role__name="Student"):
                 assignments.append(
                     Assignment.objects.create(
