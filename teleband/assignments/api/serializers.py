@@ -35,7 +35,7 @@ class GroupSerializer(serializers.ModelSerializer):
         member_list = [{"enrollment_id": ae[1].id, 
                         "enrollment_username": ae[1].user.username, 
                         "activity_type_name": ae[0].activity.activity_type_name, 
-                        "assignment_submitted": bool(ae[0].submissions)} for ae in assignment_enrollments]
+                        "assignment_submitted": bool(ae[0].submissions.count())} for ae in assignment_enrollments]
         return member_list
 
     class Meta:
