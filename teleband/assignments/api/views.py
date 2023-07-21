@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from .serializers import AssignmentViewSetSerializer, AssignmentInstrumentSerializer, AssignmentSerializer
-from teleband.assignments.api.serializers import ActivitySerializer
+from teleband.assignments.api.serializers import ActivitySerializer, PiecePlanSerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer
 
-from teleband.assignments.models import Assignment, Activity, AssignmentGroup
+from teleband.assignments.models import Assignment, Activity, AssignmentGroup, PiecePlan
 from teleband.courses.models import Course
 from teleband.utils.permissions import IsTeacher
 
@@ -76,3 +76,15 @@ class AssignmentViewSet(
             ).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
         if role.name == "Teacher":
             return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
+
+class PiecePlanViewSet(
+    RetrieveModelMixin, ListModelMixin, GenericViewSet
+):
+    serializer_class = PiecePlanSerializer
+    queryset = PiecePlan.objects.all()
+    # permission_classes = [IsTeacher]
+
+    # def get_serializer_class(self):
+    #     if self.action == "create":
+    #         return PieceCreateSerializer
+    #     return self.serializer_class

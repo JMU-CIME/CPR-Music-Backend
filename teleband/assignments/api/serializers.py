@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from teleband.assignments.models import Assignment, Activity, ActivityType, AssignmentGroup
+from teleband.assignments.models import Assignment, Activity, ActivityType, AssignmentGroup, PiecePlan
 from teleband.courses.api.serializers import EnrollmentSerializer
 from teleband.instruments.api.serializers import InstrumentSerializer
 from teleband.submissions.api.serializers import SubmissionSerializer
@@ -114,3 +114,17 @@ class NotationAssignmentSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "url": {"view_name": "api:assignment-detail", "lookup_field": "id"},
         }
+
+class PiecePlanSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
+    type = serializers.CharField()
+    piece = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    activities = ActivitySerializer(many=True)
+
+    class Meta:
+        model = PiecePlan
+        fields = ["id", "piece", "type", "activities"]
+
+        # extra_kwargs = {
+        #     "url": {"view_name": "api:pieceplan-detail", "lookup_field": "id"},
+        # }
