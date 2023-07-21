@@ -90,6 +90,10 @@ curl -v \
 -H 'Authorization: Token d0c5a7bf9508026cab574bf149785caa52bb069b' \
 http://localhost:8000/api/courses/6th-grade-band/assignments/ && echo "\n"
 
+### GET /api/courses/:slug/piece-plans
+
+Teacher only: get all the piece plans for this course
+
 ### PATCH /api/courses/:slug/assignment/:id/
 
 Teacher only: change instrument

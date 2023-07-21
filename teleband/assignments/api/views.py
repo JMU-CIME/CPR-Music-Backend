@@ -82,7 +82,8 @@ class PiecePlanViewSet(
 ):
     serializer_class = PiecePlanSerializer
     queryset = PiecePlan.objects.all()
-    # permission_classes = [IsTeacher]
+    lookup_field = "id"
+    permission_classes = [IsTeacher]
 
     # def get_serializer_class(self):
     #     if self.action == "create":
