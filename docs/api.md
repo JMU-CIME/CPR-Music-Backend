@@ -89,6 +89,7 @@ curl -v \
 --header 'Content-Type: application/json' \
 -H 'Authorization: Token d0c5a7bf9508026cab574bf149785caa52bb069b' \
 http://localhost:8000/api/courses/6th-grade-band/assignments/ && echo "\n"
+```
 
 ### GET /api/courses/:slug/piece-plans
 
@@ -282,6 +283,30 @@ https://dev-api.tele.band/api/courses/6th-grade-band/assign/ && echo "\n"
 - Returns 404 if no such piece_id
 - Returns 400 if any submissions have already been made to this assignment
 - Returns 200 with empty body on success
+
+
+### POST /api/courses/:slug/assign_piece_plan
+
+curl -v \
+--request POST \
+--header 'Content-Type: application/json' \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+-d '{"piece_plan_id":"1"}' \
+https://dev-api.tele.band/api/courses/6th-grade-band/assign_piece_plan/ && echo "\n"
+
+- If this piece_plan has a type of "telephone_fixed", then this call will create assignment groups and assign each student to a group. If the number of students is not divisible by the size of the groups, then some students will be assigned to more than one group.
+
+
+### POST /api/courses/:slug/assign_curriculum
+
+curl -v \
+--request POST \
+--header 'Content-Type: application/json' \
+-H 'Authorization: Token e9a82a7c334fbdfc52f502efebebec474708eef0' \
+-d '{"curriculum_id":"1"}' \
+https://dev-api.tele.band/api/courses/6th-grade-band/assign_curriculum/ && echo "\n"
+
+- Runs through all piece_plans in the curriculum and assigns them to enrollments in the course.
 
 
 ### GET /api/courses/:slug/assignments/:id/notation
