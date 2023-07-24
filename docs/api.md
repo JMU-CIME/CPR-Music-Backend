@@ -296,6 +296,8 @@ https://dev-api.tele.band/api/courses/6th-grade-band/assign_piece_plan/ && echo 
 
 - If this piece_plan has a type of "telephone_fixed", then this call will create assignment groups and assign each student to a group. If the number of students is not divisible by the size of the groups, then some students will be assigned to more than one group.
 
+- Note that to get the order of an assignment within a piece plan you'll have to go from the assignment to the piece plan. This is especially important for telephone_fixed assignments.
+
 
 ### POST /api/courses/:slug/assign_curriculum
 
