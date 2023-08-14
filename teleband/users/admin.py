@@ -7,9 +7,14 @@ from reversion.admin import VersionAdmin
 
 from teleband.users.forms import UserChangeForm, UserCreationForm
 from teleband.users.models import Role, GroupInvitation
+from teleband.courses.models import Enrollment
 
 User = get_user_model()
 
+
+class EnrollmentInline(admin.TabularInline):
+    model = Enrollment
+    extra = 0
 
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
@@ -38,6 +43,7 @@ class UserAdmin(auth_admin.UserAdmin):
     )
     list_display = ["username", "name", "is_superuser"]
     search_fields = ["name"]
+    inlines = [EnrollmentInline]
 
 
 @admin.register(Role)

@@ -4,11 +4,11 @@ from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateMode
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from .serializers import AssignmentSerializer, AssignmentInstrumentSerializer
-from teleband.assignments.api.serializers import ActivitySerializer
+from .serializers import AssignmentViewSetSerializer, AssignmentInstrumentSerializer, AssignmentSerializer
+from teleband.assignments.api.serializers import ActivitySerializer, PiecePlanSerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer
 
-from teleband.assignments.models import Assignment, Activity
+from teleband.assignments.models import Assignment, Activity, AssignmentGroup, PiecePlan
 from teleband.courses.models import Course
 from teleband.utils.permissions import IsTeacher
 
@@ -40,7 +40,7 @@ class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
 class AssignmentViewSet(
     RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet
 ):
-    serializer_class = AssignmentSerializer
+    serializer_class = AssignmentViewSetSerializer
     queryset = Assignment.objects.all()
     lookup_field = "id"
     permission_classes = [TeacherUpdate]
@@ -48,6 +48,8 @@ class AssignmentViewSet(
     def get_serializer_class(self):
         if self.action in ["update", "partial_update"]:
             return AssignmentInstrumentSerializer
+        elif self.action == "retrieve":
+            return AssignmentSerializer
         return self.serializer_class
 
     @action(detail=True)
@@ -71,6 +73,19 @@ class AssignmentViewSet(
         if role.name == "Student":
             return Assignment.objects.filter(
                 enrollment__course=course, enrollment__user=self.request.user
-            ).select_related("activity", "instrument", "part", "part__piece")
+            ).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
         if role.name == "Teacher":
-            return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "part", "part__piece")
+            return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
+
+class PiecePlanViewSet(
+    RetrieveModelMixin, ListModelMixin, GenericViewSet
+):
+    serializer_class = PiecePlanSerializer
+    queryset = PiecePlan.objects.all()
+    lookup_field = "id"
+    permission_classes = [IsTeacher]
+
+    # def get_serializer_class(self):
+    #     if self.action == "create":
+    #         return PieceCreateSerializer
+    #     return self.serializer_class

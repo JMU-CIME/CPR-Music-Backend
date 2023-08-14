@@ -6,8 +6,8 @@ from .models import Submission, SubmissionAttachment, Grade
 
 @admin.register(Submission)
 class SubmissionAdmin(VersionAdmin):
-    list_display = ("id", "assignment", "submitted", "content")
-    list_filter = ("assignment", "submitted")
+    list_display = ("id", "assignment", "submitted",)
+    list_filter = ("assignment__piece",)
 
 
 @admin.register(SubmissionAttachment)
