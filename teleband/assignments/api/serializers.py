@@ -79,7 +79,7 @@ class AssignmentViewSetSerializer(serializers.ModelSerializer):
     transposition = serializers.CharField(source="instrument.transposition.name", read_only=True)
     group = GroupSerializer()
     # instrument = InstrumentSerializer()
-    # part = PartSerializer()
+    part = PartSerializer()
     # enrollment = EnrollmentSerializer()
     # submissions = SubmissionSerializer(many=True)
 
@@ -88,7 +88,7 @@ class AssignmentViewSetSerializer(serializers.ModelSerializer):
         # fields = ["activity", "deadline", "instrument", "id", "url"]
         # fields = ["activity", "deadline", "instrument", "part", "id", "enrollment", "submissions"]
         fields = ["id", "activity", "activity_type_name", "activity_type_category", "part_type",
-                  "piece_name", "piece_id", "piece_slug", "instrument", "transposition", "group"]
+                  "piece_name", "piece_id", "piece_slug", "instrument", "transposition", "group", "part"]
 
         extra_kwargs = {
             "url": {"view_name": "api:assignment-detail", "lookup_field": "id"},
