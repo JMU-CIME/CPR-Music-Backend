@@ -5,7 +5,7 @@ from teleband.courses.api.serializers import EnrollmentSerializer
 from teleband.instruments.api.serializers import InstrumentSerializer
 from teleband.submissions.api.serializers import SubmissionSerializer
 from teleband.utils.serializers import GenericNameSerializer
-from teleband.musics.api.serializers import PartTranspositionSerializer, PartSerializer
+from teleband.musics.api.serializers import PartTranspositionSerializer, PartSerializer, PieceSerializer
 
 
 class ActivityTypeSerializer(serializers.ModelSerializer):
@@ -118,7 +118,8 @@ class NotationAssignmentSerializer(serializers.ModelSerializer):
 class PiecePlanSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     type = serializers.CharField()
-    piece = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    # piece = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    piece = PieceSerializer()
     activities = ActivitySerializer(many=True)
 
     class Meta:

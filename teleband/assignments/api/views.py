@@ -81,7 +81,7 @@ class PiecePlanViewSet(
     RetrieveModelMixin, ListModelMixin, GenericViewSet
 ):
     serializer_class = PiecePlanSerializer
-    queryset = PiecePlan.objects.all()
+    queryset = PiecePlan.objects.prefetch_related("piece")
     lookup_field = "id"
     permission_classes = [IsTeacher]
 
