@@ -85,6 +85,11 @@ class PiecePlanViewSet(
     lookup_field = "id"
     permission_classes = [IsTeacher]
 
+
+    def get_queryset(self):
+        course = Course.objects.get(slug=self.kwargs["course_slug_slug"])
+        return PiecePlan.objects.filter(curriculum__course=course).prefetch_related("piece")
+
     # def get_serializer_class(self):
     #     if self.action == "create":
     #         return PieceCreateSerializer
