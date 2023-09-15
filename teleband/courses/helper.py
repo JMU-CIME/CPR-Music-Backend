@@ -31,12 +31,12 @@ def assign_one_piece_activity(course, piece, activity, deadline=None):
 
 
 def assign_piece_plan(course, piece_plan, deadline=None):
-    if not piece_plan.type:
+    if not piece_plan.type or piece_plan.type != "telephone_fixed":
         return assign_vanilla_piece_plan(course, piece_plan, deadline)
-    elif piece_plan.type == "telephone_fixed":
+    else:  # piece_plan.type == "telephone_fixed":
         return assign_telephone_fixed(course, piece_plan, deadline)
-    else:
-        raise Exception("Unknown piece plan type")
+    # else:
+    #     raise Exception("Unknown piece plan type")
     
 
 def assign_vanilla_piece_plan(course, piece_plan, deadline=None):
