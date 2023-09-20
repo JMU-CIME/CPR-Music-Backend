@@ -417,10 +417,7 @@ for piece in from_xml:
 
 
 def update_site_forward(apps, schema_editor):
-    Piece = apps.get_model("musics", "Piece")
-    if Piece.objects.filter(name=data[0]["name"]).exists():
-        return
-
+    # I manually created a piece in dev, so I need to not check because i didn't make all the parts I was supposed to
     for piece in data:
         for part in piece["parts"]:
             for t in part["transpositions"]:
