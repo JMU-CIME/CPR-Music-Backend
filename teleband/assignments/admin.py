@@ -114,3 +114,4 @@ class CurriculumAdmin(VersionAdmin):
     )
     inlines = (CurriculumEntryInline,)
     raw_id_fields = ("piece_plans",)
+    save_as = True
