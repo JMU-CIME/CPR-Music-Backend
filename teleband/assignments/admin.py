@@ -65,6 +65,7 @@ class PiecePlanAdmin(VersionAdmin):
     )
     inlines = (PiecePlanActivityInline,)
     raw_id_fields = ("activities",)
+    save_as = True
 
 class AssignmentInline(admin.TabularInline):
     model = Assignment
