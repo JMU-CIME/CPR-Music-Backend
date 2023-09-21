@@ -116,6 +116,7 @@ The following details how to deploy this application.
 1. source ~/venv-dev/bin/activate
 <!-- 1. pip install -r requirements/production.txt # maybe don't need this because no new requirements? -->
 1. stop old version `sudo supervisorctl stop dev_api_musiccpr`
+1. migrate `python manage.py migrate`
 1. change symlink `cd ~/dev-versions; rm live; ln -s /home/ec2-user/dev-versions/v0.2.2 live`
 1. sudo supervisorctl start dev_api_musiccpr
 
@@ -147,3 +148,7 @@ Prefer to have:
 1. copy (and update) nginx fe and be configs from dev for prod
 1. copy (and update) supervisor config from dev for prod see: `/etc/supervisorctl
 1. sudo supervisorctl reread
+
+## Media Files not working in deployed environment
+1. i needed to tell s3 bucket that it should make another directory public access
+
