@@ -45,6 +45,7 @@ class AssignmentAdmin(VersionAdmin):
     )
     search_fields = ("activity__activity_type__name", "enrollment__user__username")
     date_hierarchy = "created_at"
+    save_as = True
 
 class PiecePlanActivityInline(admin.TabularInline):
     model = PlannedActivity
