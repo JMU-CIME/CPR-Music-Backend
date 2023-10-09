@@ -149,6 +149,6 @@ Prefer to have:
 1. copy (and update) supervisor config from dev for prod see: `/etc/supervisorctl
 1. sudo supervisorctl reread
 
-## Media Files not working in deployed environment
+## Media (sample audio) Files not working in deployed environment
 1. i needed to tell s3 bucket that it should make another directory public access
 
