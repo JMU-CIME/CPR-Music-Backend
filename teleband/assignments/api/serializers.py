@@ -81,14 +81,14 @@ class AssignmentViewSetSerializer(serializers.ModelSerializer):
     # instrument = InstrumentSerializer()
     part = PartSerializer()
     # enrollment = EnrollmentSerializer()
-    # submissions = SubmissionSerializer(many=True)
+    submissions = SubmissionSerializer(many=True)
 
     class Meta:
         model = Assignment
         # fields = ["activity", "deadline", "instrument", "id", "url"]
         # fields = ["activity", "deadline", "instrument", "part", "id", "enrollment", "submissions"]
         fields = ["id", "activity", "activity_type_name", "activity_type_category", "part_type",
-                  "piece_name", "piece_id", "piece_slug", "instrument", "transposition", "group", "part"]
+                  "piece_name", "piece_id", "piece_slug", "instrument", "transposition", "group", "part", "submissions"]
 
         extra_kwargs = {
             "url": {"view_name": "api:assignment-detail", "lookup_field": "id"},
