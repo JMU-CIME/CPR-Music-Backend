@@ -60,6 +60,7 @@ class Part(models.Model):
     part_type = models.ForeignKey(PartType, on_delete=models.PROTECT)
     piece = models.ForeignKey(Piece, related_name="parts", on_delete=models.PROTECT)
     sample_audio = models.FileField(blank=True, upload_to="sample_audio/")
+    chord_scale_pattern = models.JSONField(blank=True,null=True)
 
     def for_activity(activity, piece):
         # Get this piece’s part for this kind of activity
