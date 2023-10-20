@@ -104,6 +104,52 @@ flatios = {
 
 
 def update_site_forward(apps, schema_editor):
+    class TemporaryIntermediatePartCreateSerializer(serializers.ModelSerializer):
+        transpositions = PartTranspositionCreateSerializer(many=True)
+        part_type = GenericNameSerializer(model_cls=PartType)
+
+        class Meta:
+            model = apps.get_model("musics", "Part")
+            fields = [
+                "name",
+                "part_type",
+                "transpositions",
+            ]
+
+        def __init__(self, *args, **kwargs):
+            self.piece = kwargs.pop("piece", None)
+            super().__init__(*args, **kwargs)
+
+        def create(self, validated_data):
+            Piece = apps.get_model("musics", "Piece")
+            Part = apps.get_model("musics", "Part")
+            transpositions_data = validated_data.pop("transpositions")
+            piece = Piece.objects.get(id=self.piece.id)
+            part = Part.objects.create(piece=piece, **validated_data)
+
+            pts = PartTranspositionCreateSerializer(many=True, part=part)
+            pts.create(transpositions_data)
+            return part
+
+    class TemporaryIntermediatePieceCreateSerializer(serializers.ModelSerializer):
+        parts = TemporaryIntermediatePartCreateSerializer(many=True)
+        ensemble_type = GenericNameSerializer(model_cls=EnsembleType)
+        accompaniment = serializers.CharField(allow_null=True, allow_blank=True)
+        video = serializers.CharField(allow_null=True, allow_blank=True, required=False)
+
+        class Meta:
+            model = apps.get_model("musics", "Piece")
+            fields = ["name", "ensemble_type", "parts", "accompaniment", "video"]
+
+        def create(self, validated_data):
+            Piece = apps.get_model("musics", "Piece")
+            parts_data = validated_data.pop("parts")
+            piece = Piece.objects.create(**validated_data)
+
+            ps = TemporaryIntermediatePartCreateSerializer(many=True, piece=piece)
+            ps.create(parts_data)
+            return piece
+
     Piece = apps.get_model("musics", "Piece")
     if Piece.objects.filter(name="Air for Band").exists():
         return
@@ -112,15 +158,14 @@ def update_site_forward(apps, schema_editor):
         for t in part["transpositions"]:
             t["flatio"] = json.dumps(flatios[part["name"]][t["transposition"]])
 
-    serializer = PieceCreateSerializer(data=data)
+    serializer = TemporaryIntermediatePieceCreateSerializer(data=data)
     serializer.is_valid()
     serializer.create(serializer.validated_data)
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('musics', '0015_auto_20220206_2027'),
+        ("musics", "0015_auto_20220206_2027"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]
