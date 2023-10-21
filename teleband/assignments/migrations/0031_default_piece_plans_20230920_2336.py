@@ -172,6 +172,7 @@ def update_site_forward(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("assignments", "0030_alter_assignmentgroup_type"),
+        ("musics", "0020_auto_20230918_1451_seed_beginning_orchestra"),
     ]
 
     operations = [migrations.RunPython(update_site_forward, migrations.RunPython.noop)]

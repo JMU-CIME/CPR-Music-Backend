@@ -2,7 +2,8 @@
 
 from django.db import migrations
 import json
-from teleband.musics.api.serializers import *
+from teleband.utils.migration_helpers import create_part_et_al, create_piece_et_al
+
 
 data = [
     {
@@ -1659,9 +1660,7 @@ def update_site_forward(apps, schema_editor):
         for part in piece["parts"]:
             for t in part["transpositions"]:
                 t["flatio"] = json.dumps(flatios[part["name"]][t["transposition"]])
-        serializer = PieceCreateSerializer(data=piece)
-        serializer.is_valid()
-        serializer.create(serializer.validated_data)
+        create_piece_et_al(apps, piece)
 
 
 class Migration(migrations.Migration):

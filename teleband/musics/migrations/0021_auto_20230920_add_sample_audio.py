@@ -2,8 +2,6 @@
 
 from django.db import migrations
 
-from teleband.musics.api.serializers import *
-
 parts = {
     "Air for Band Melody": "sample_audio/Air_for_Band_Trumpet_Melody.mp3",
     "Air for Band Bassline": "sample_audio/Air_for_Band_Bass_Line.mp3",
