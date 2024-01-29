@@ -12,7 +12,7 @@ class SubmissionSerializer(serializers.ModelSerializer):
     attachments = AttachmentSerializer(many=True,required=False)
     class Meta:
         model = Submission
-        fields = ["id", "submitted", "content", "grade", "self_grade", "attachments"]
+        fields = ["id", "submitted", "content", "grade", "self_grade", "attachments", "index"]
 
         # extra_kwargs = {
         #     "assignment": {"view_name": "api:assignment-detail", "lookup_field": "id"},

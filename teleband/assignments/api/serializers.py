@@ -71,6 +71,7 @@ class AssignmentViewSetSerializer(serializers.ModelSerializer):
     activity = serializers.PrimaryKeyRelatedField(queryset=Activity.objects.all())
     activity_type_name = serializers.CharField(source="activity.activity_type_name", read_only=True)
     activity_type_category = serializers.CharField(source="activity.category", read_only=True)
+    activity_body = serializers.CharField(source="activity.body", read_only=True)
     part_type = serializers.CharField(source="activity.part_type.name", read_only=True)
     piece_name = serializers.SlugField(source="piece.name", read_only=True)
     piece_id = serializers.IntegerField(source="piece.id", read_only=True)
@@ -87,7 +88,7 @@ class AssignmentViewSetSerializer(serializers.ModelSerializer):
         model = Assignment
         # fields = ["activity", "deadline", "instrument", "id", "url"]
         # fields = ["activity", "deadline", "instrument", "part", "id", "enrollment", "submissions"]
-        fields = ["id", "activity", "activity_type_name", "activity_type_category", "part_type",
+        fields = ["id", "activity", "activity_type_name", "activity_type_category", "activity_body", "part_type",
                   "piece_name", "piece_id", "piece_slug", "instrument", "transposition", "group", "part", "submissions"]
 
         extra_kwargs = {
