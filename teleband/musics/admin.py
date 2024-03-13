@@ -21,6 +21,7 @@ class PieceAdmin(VersionAdmin):
     list_display = (
         "id",
         "name",
+        "slug",
         "composer",
         "video",
         "audio",
