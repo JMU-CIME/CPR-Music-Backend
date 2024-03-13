@@ -23,8 +23,9 @@ NEA_CREATE_DEMO_PIECES = [
 NEA_CONDITIONS = ['Aural', 'Theoretical', 'Exploratory']
 
 def add_demos(apps, schema_editor):
-    Enrollment = apps.get_model("courses", "Enrollment")
     Course = apps.get_model("courses", "Course")
+    Enrollment = apps.get_model("courses", "Enrollment")
+    Instrument = apps.get_model("instruments", "Instrument")
     Piece = apps.get_model("musics", "Piece")
     PiecePlan = apps.get_model("assignments", "PiecePlan")
     Role = apps.get_model("users", "Role")
@@ -44,6 +45,9 @@ def add_demos(apps, schema_editor):
 
         for demo_username in DEMO_USERS:
             user = User.objects.get(username=demo_username)
+            if user.instrument is None:
+                user.instrument = Instrument.objects.get(name="Piano")
+                user.save()
             Enrollment.objects.create(
                 user=user,
                 course=demo_course,

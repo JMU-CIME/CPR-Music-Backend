@@ -13,7 +13,7 @@ def assign_all_piece_activities(course, piece, deadline=None):
     return assignments
 
 
-def assign_one_piece_activity(course, piece, activity, deadline=None):
+def assign_one_piece_activity(course, piece, activity, deadline=None, piece_plan=None):
     assignments = []
     part = Part.for_activity(activity, piece)
     for e in Enrollment.objects.filter(course=course, role__name="Student"):
@@ -24,6 +24,7 @@ def assign_one_piece_activity(course, piece, activity, deadline=None):
                 instrument=e.instrument if e.instrument else e.user.instrument,
                 part=part,
                 piece=piece,
+                piece_plan=piece_plan,
                 deadline=deadline,
             )
         )
@@ -42,7 +43,7 @@ def assign_piece_plan(course, piece_plan, deadline=None):
 def assign_vanilla_piece_plan(course, piece_plan, deadline=None):
     assignments = []
     for activity in piece_plan.activities.all():
-        assignments += assign_one_piece_activity(course, piece_plan.piece, activity, deadline)
+        assignments += assign_one_piece_activity(course, piece_plan.piece, activity, deadline, piece_plan)
     return assignments
 
 

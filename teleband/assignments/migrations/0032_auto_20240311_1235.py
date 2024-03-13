@@ -104,7 +104,6 @@ def create_NEA_plans(apps, schema_editor):
                 if act_type_name == 'Create':
                     act_type = ActivityType.objects.get(name=cond)
                 else:
-                    print('act_type_name', act_type_name)
                     act_type = ActivityType.objects.get(name=act_type_name)
     
                 activity = Activity.objects.get(
