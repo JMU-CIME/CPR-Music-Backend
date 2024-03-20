@@ -18,6 +18,7 @@ NEA_CREATE_DEMO_PIECES = [
     "Freedom 2040 (Orchestra)",
     "Down by the Riverside",
     "Deep River",
+    "I Want to be Ready"
 ]
 
 NEA_CONDITIONS = ['Aural', 'Theoretical', 'Exploratory']
@@ -48,7 +49,7 @@ def add_demos(apps, schema_editor):
             if user.instrument is None:
                 user.instrument = Instrument.objects.get(name="Piano")
                 user.save()
-            Enrollment.objects.create(
+            Enrollment.objects.update_or_create(
                 user=user,
                 course=demo_course,
                 instrument=user.instrument,
@@ -56,6 +57,9 @@ def add_demos(apps, schema_editor):
             )
 
         for piece_name in NEA_CREATE_DEMO_PIECES:
+            if piece_name=="I Want to be Ready" and condition != 'Aural':
+                pass
+            
             piece = Piece.objects.get(name=piece_name)
             piece_plan, p_created = PiecePlan.objects.update_or_create(
                 name=f"NEA-{piece.name}-{condition}",
