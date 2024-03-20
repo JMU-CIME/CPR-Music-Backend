@@ -65,7 +65,7 @@ def delete_dupes(dupes):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('assignments', '0033_auto_20240312_2321'),
+        ('assignments', '0034_auto_20240315_1547'),
     ]
 
     operations = [
