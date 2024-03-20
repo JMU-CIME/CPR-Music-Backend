@@ -1,4 +1,5 @@
 
+from django.db import IntegrityError
 from teleband.courses.models import Enrollment, Course
 from teleband.musics.models import Piece, Part
 from teleband.assignments.models import Activity, ActivityType, Assignment, AssignmentGroup, PiecePlan
@@ -17,8 +18,9 @@ def assign_one_piece_activity(course, piece, activity, deadline=None, piece_plan
     assignments = []
     part = Part.for_activity(activity, piece)
     for e in Enrollment.objects.filter(course=course, role__name="Student"):
-        assignments.append(
-            Assignment.objects.create(
+        try:
+            # TODO is it reasonable to make this update_or_create?
+            assn, assn_created = Assignment.objects.update_or_create(
                 activity=activity,
                 enrollment=e,
                 instrument=e.instrument if e.instrument else e.user.instrument,
@@ -27,7 +29,10 @@ def assign_one_piece_activity(course, piece, activity, deadline=None, piece_plan
                 piece_plan=piece_plan,
                 deadline=deadline,
             )
-        )
+            if assn_created:
+                assignments.append(assn)
+        except IntegrityError as e:
+            print(f"IntegrityError: {e}")
     return assignments
 
 
