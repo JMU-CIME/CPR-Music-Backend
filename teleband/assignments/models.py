@@ -92,6 +92,13 @@ class Assignment(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        # FIXME: do this with https://docs.djangoproject.com/en/5.0/ref/models/options/#unique-together instead.
+        # nevermind, this may be deprecated
+        constraints = [
+            models.UniqueConstraint(fields=["activity", "enrollment", "piece"], name="unique_assignment")
+        ]
+
     def __str__(self):
         return f"[{self.enrollment.user.username}] {self.activity} {self.part.piece}"
     
