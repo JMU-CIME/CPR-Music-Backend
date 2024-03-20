@@ -31,7 +31,9 @@ the others.
 def delete_dupes(dupes):
     # assume the first assignment is the one with the most recent submission
     assn_w_max_sub_date = dupes[0]
-    max_sub_for_assn = assn_w_max_sub_date.submissions.order_by('-submitted')[0]
+    max_sub_for_assn = None
+    if assn_w_max_sub_date.submissions.order_by('-submitted').count() > 0:
+        max_sub_for_assn = assn_w_max_sub_date.submissions.order_by('-submitted')[0]
 
     to_remove = []
 
@@ -44,13 +46,14 @@ def delete_dupes(dupes):
         if d.submissions.count() == 0:
             to_remove.append(d)
             continue
-        most_recent_sub = d.submissions.order_by('-submitted')[0]
-        if most_recent_sub.submitted > max_sub_for_assn:
-            to_remove.append(assn_w_max_sub_date)
-            assn_w_max_sub_date = d
-            max_sub_for_assn = most_recent_sub
         else:
-            to_remove.append(d)
+            most_recent_sub = d.submissions.order_by('-submitted')[0]
+            if max_sub_for_assn is None or most_recent_sub.submitted > max_sub_for_assn:
+                to_remove.append(assn_w_max_sub_date)
+                assn_w_max_sub_date = d
+                max_sub_for_assn = most_recent_sub
+            else:
+                to_remove.append(d)
     
     for r in to_remove:
         subs = r.submissions.all()
