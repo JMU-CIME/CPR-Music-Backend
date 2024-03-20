@@ -94,6 +94,7 @@ class Assignment(models.Model):
 
     class Meta:
         # FIXME: do this with https://docs.djangoproject.com/en/5.0/ref/models/options/#unique-together instead.
+        # nevermind, this may be deprecated
         constraints = [
             models.UniqueConstraint(fields=["activity", "enrollment", "piece"], name="unique_assignment")
         ]
