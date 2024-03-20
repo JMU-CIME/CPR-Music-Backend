@@ -12,7 +12,7 @@ def remove_dupes(apps, schema_editor):
     for c in Course.objects.all():
 
         # assignments are only duplicates if they are assigned to the same student (enrollment), and ...
-        for e in c.enrollments.all():
+        for e in c.enrollment_set.all():
 
             # ...if they are the same activity and ...
             for act in Activity.objects.all():
@@ -54,9 +54,11 @@ def delete_dupes(dupes):
     
     for r in to_remove:
         subs = r.submissions.all()
-        attachments = [sub.attachments for sub in subs]
-        for a in attachments:
-            a.delete()
+        for sub in subs:
+            sub.attachments.all().delete()
+        # attachments = [sub.attachments.all() for sub in subs]
+        # for a in attachments:
+        #     a.delete()
         subs.delete()
         r.delete()
 
