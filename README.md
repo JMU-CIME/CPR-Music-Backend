@@ -117,8 +117,14 @@ The following details how to deploy this application.
 <!-- 1. pip install -r requirements/production.txt # maybe don't need this because no new requirements? -->
 1. stop old version `sudo supervisorctl stop dev_api_musiccpr`
 1. migrate `python manage.py migrate`
-1. change symlink `cd ~/dev-versions; rm live; ln -s /home/ec2-user/dev-versions/v0.2.2 live`
+1. change symlink `cd ~/dev-versions; ls -al; rm live; ln -s /data/dev-versions/v2.0.3 live`
 1. sudo supervisorctl start dev_api_musiccpr
+
+### Deployment Notes
+1. I was bad and used a non-historical model-related code in assignments/migrations/0033...
+    * if this migrations fails, try migrating the instruments app before the assignments app
+        * `python manage.py migrate instruments`
+        * TODO: probably I should just make the assignments migration depend on this instruments migration?
 
 # Renewing SSL Certs (requires creating DNS TXT Entries rn 😕)
 1. maybe this is the command? 
