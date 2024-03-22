@@ -67,12 +67,12 @@ class TeacherSubmissionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSe
                     "error": "Missing piece_slug or activity_name (figure it out!) in get data"
                 },
             )
-        
+
         course_id = self.kwargs["course_slug_slug"]
         piece_slug = request.GET["piece_slug"]
         activity_name = request.GET["activity_name"]
-        
-        queryset =  (
+
+        queryset = (
             Submission.objects.filter(
                 assignment__enrollment__course__slug=course_id,
                 assignment__activity__activity_type__name=activity_name,
@@ -87,9 +87,14 @@ class TeacherSubmissionViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSe
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
+
 class GradeViewSet(ModelViewSet):
     queryset = Grade.objects.all()
     serializer_class = GradeSerializer
 
     def get_queryset(self, *args, **kwargs):
-        return Grade.objects.filter(student_submission__assignment__enrollment__course__slug=self.kwargs["course_slug_slug"])
+        return Grade.objects.filter(
+            student_submission__assignment__enrollment__course__slug=self.kwargs[
+                "course_slug_slug"
+            ]
+        )
