@@ -1,3 +1,4 @@
+from collections import defaultdict
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -36,7 +37,6 @@ class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             .values_list("pk", flat=True)
         )
 
-
 class AssignmentViewSet(
     RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet
 ):
@@ -71,11 +71,25 @@ class AssignmentViewSet(
         role = self.request.user.enrollment_set.get(course=course).role
 
         if role.name == "Student":
-            return Assignment.objects.filter(
+            assignments = Assignment.objects.filter(
                 enrollment__course=course, enrollment__user=self.request.user
             ).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group").prefetch_related("submissions")
         if role.name == "Teacher":
-            return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
+            assignments = Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
+
+        return assignments
+
+    def list(self, request, *args, **kwargs):
+        assignments = self.get_queryset()
+
+        serialized = AssignmentViewSetSerializer(assignments, context={'request': request}, many=True)
+
+        grouped = defaultdict(list)
+        for assignment in serialized.data:
+            key = assignment['piece_slug']
+            grouped[key].append(assignment)
+        return Response(grouped)
+
 
 class PiecePlanViewSet(
     RetrieveModelMixin, ListModelMixin, GenericViewSet
