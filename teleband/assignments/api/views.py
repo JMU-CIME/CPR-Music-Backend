@@ -1,3 +1,4 @@
+from collections import defaultdict
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
@@ -35,7 +36,6 @@ class ActivityViewSet(RetrieveModelMixin, ListModelMixin, GenericViewSet):
             .distinct("activity")
             .values_list("pk", flat=True)
         )
-
 
 class AssignmentViewSet(
     RetrieveModelMixin, UpdateModelMixin, ListModelMixin, GenericViewSet
@@ -76,6 +76,37 @@ class AssignmentViewSet(
             ).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group").prefetch_related("submissions")
         if role.name == "Teacher":
             return Assignment.objects.filter(enrollment__course=course).select_related("activity", "instrument", "piece", "activity__part_type", "instrument__transposition", "group")
+
+    def list(self, request, *args, **kwargs):
+        assignments = self.get_queryset()
+
+        serialized = AssignmentViewSetSerializer(assignments, context={'request': request}, many=True)
+
+        grouped = defaultdict(list)
+        for assignment in serialized.data:
+            key = assignment["piece_slug"]
+            grouped[key].append(assignment)
+
+        ordering = {
+            "Melody": 1,
+            "Bassline": 2,
+            "Creativity": 3,
+            "Reflection": 4,
+            "Connect": 5,
+            "Aural": 3,
+            "Exploratory": 3,
+            "Theoretical": 3,
+            "MelodyPost": 3.1,
+            "BasslinePost": 3.2,
+        }
+
+        # FIXME: this should respect order from server/pieceplan and mayeb do this as a backup?
+        orderFromActivityType = lambda a: ordering[a['activity_type_name']]
+        for pieceplan in grouped:
+            grouped[pieceplan].sort(key=orderFromActivityType)
+
+        return Response(grouped)
+
 
 class PiecePlanViewSet(
     RetrieveModelMixin, ListModelMixin, GenericViewSet
