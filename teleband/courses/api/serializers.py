@@ -20,7 +20,7 @@ class CourseSerializer(CourseRelatedSerializer):
     owner = UserSerializer()
 
     class Meta(CourseRelatedSerializer.Meta):
-        fields = CourseRelatedSerializer.Meta.fields + ["owner"]
+        fields = CourseRelatedSerializer.Meta.fields + ["owner", "can_edit_instruments"]
 
 
 class EnrollmentInstrumentSerializer(serializers.ModelSerializer):

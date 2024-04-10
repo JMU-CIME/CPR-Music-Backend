@@ -16,6 +16,7 @@ class Course(models.Model):
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, through="Enrollment")
     start_date = models.DateField()
     end_date = models.DateField()
+    can_edit_instruments = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.pk:
