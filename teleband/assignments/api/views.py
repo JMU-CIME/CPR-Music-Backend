@@ -9,7 +9,7 @@ from .serializers import AssignmentViewSetSerializer, AssignmentInstrumentSerial
 from teleband.assignments.api.serializers import ActivitySerializer, PiecePlanSerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer
 
-from teleband.assignments.models import Assignment, Activity, AssignmentGroup, PiecePla
+from teleband.assignments.models import Assignment, Activity, AssignmentGroup, PiecePlan
 from teleband.courses.models import Course
 from teleband.utils.permissions import IsTeacher
 
