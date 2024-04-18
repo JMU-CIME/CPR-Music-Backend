@@ -37,9 +37,10 @@ from teleband.assignments.models import Assignment, Activity, PiecePlan, Curricu
 from teleband.musics.models import PartType, Piece, Part
 from teleband.users.models import Role
 from teleband.utils.permissions import IsTeacher
+from teleband.instruments.models import Instrument
 
 from teleband.courses.helper import (
-    assign_all_piece_activities, 
+    assign_all_piece_activities,
     AssignmentGroupSizeException,
     assign_piece_plan,
     assign_curriculum,
@@ -120,7 +121,7 @@ class CoursePermission(permissions.IsAuthenticated):
         return True
 
     def has_object_permission(self, request, view, obj):
-        if view.action == "retrieve":
+        if view.action in ["retrieve", "change_piece_instrument"]:
             return super().has_permission(request, view)
         try:
             e = Enrollment.objects.get(user=request.user, course=obj)
@@ -236,7 +237,7 @@ class CourseViewSet(
             course_enrollments, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
-    
+
     @action(detail=True, methods=["post"])
     def assign_piece_plan(self, request, **kwargs):
         with transaction.atomic():
@@ -246,7 +247,7 @@ class CourseViewSet(
                     status=status.HTTP_400_BAD_REQUEST,
                     data={"error": "Missing piece_plan_id in POST data"},
                 )
-            
+
             try:
                 piece_plan = PiecePlan.objects.get(pk=parsed["piece_plan_id"])
             except PiecePlan.DoesNotExist:
@@ -254,7 +255,7 @@ class CourseViewSet(
                     "Attempt to assign non-existent piece plan {}".format(parsed["piece_plan_id"])
                 )
                 return Response(status=status.HTTP_404_NOT_FOUND)
-            
+
             course = self.get_object()
 
             missing_instruments = Enrollment.objects.filter(
@@ -282,7 +283,7 @@ class CourseViewSet(
                         "message": "Number of students must be greater than or equal to the number of activities in the piece plan",
                     },
                 )
-            
+
             serializer = AssignmentSerializer(
                 assignments, many=True, context={"request": request}
             )
@@ -324,13 +325,13 @@ class CourseViewSet(
                 },
             )
 
-        assignments = assign_all_piece_activities(course, piece)    
+        assignments = assign_all_piece_activities(course, piece)
 
         serializer = AssignmentSerializer(
             assignments, many=True, context={"request": request}
         )
         return Response(status=status.HTTP_200_OK, data=serializer.data)
-    
+
     @action(detail=True, methods=["post"])
     def assign_curriculum(self, request, **kwargs):
         parsed = request.data
@@ -339,7 +340,7 @@ class CourseViewSet(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"error": "Missing curriculum_id in POST data"},
             )
-        
+
         try:
             curriculum = Curriculum.objects.get(pk=parsed["curriculum_id"])
         except Curriculum.DoesNotExist:
@@ -347,7 +348,7 @@ class CourseViewSet(
                 "Attempt to assign non-existent curriculum {}".format(parsed["curriculum_id"])
             )
             return Response(status=status.HTTP_404_NOT_FOUND)
-        
+
         course = self.get_object()
 
         missing_instruments = Enrollment.objects.filter(
@@ -412,5 +413,38 @@ class CourseViewSet(
                     )
                 },
             )
+
+        return Response(status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["patch"])
+    def change_piece_instrument(self, request, **kwargs):
+        piece_id = request.data.get("piece_id")
+        if piece_id is None:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Piece Id missing from PATCH request"}
+            )
+
+        instrument_id = request.data.get("instrument_id")
+        if instrument_id is None:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"error": "Instrument ID missing from PATCH request"}
+            )
+
+        course = self.get_object()
+        if not course.can_edit_instruments:
+            return Response(
+                status=status.HTTP_403_FORBIDDEN,
+                data={"error": "No permission to change instrument"}
+            )
+
+        instrument = Instrument.objects.get(pk=instrument_id);
+        piece = Piece.objects.get(pk=piece_id)
+
+        assignments = Assignment.objects.filter(piece=piece, enrollment__course=course)
+        for assignment in assignments:
+            assignment.instrument = instrument
+            assignment.save()
 
         return Response(status=status.HTTP_200_OK)
