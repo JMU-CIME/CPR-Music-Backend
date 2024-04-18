@@ -9,7 +9,7 @@ from .serializers import AssignmentViewSetSerializer, AssignmentInstrumentSerial
 from teleband.assignments.api.serializers import ActivitySerializer, PiecePlanSerializer
 from teleband.musics.api.serializers import PartTranspositionSerializer
 
-from teleband.assignments.models import Assignment, Activity, AssignmentGroup, PiecePlan
+from teleband.assignments.models import Assignment, Activity, AssignmentGroup, PiecePla
 from teleband.courses.models import Course
 from teleband.utils.permissions import IsTeacher
 
@@ -101,7 +101,7 @@ class AssignmentViewSet(
         }
 
         # FIXME: this should respect order from server/pieceplan and mayeb do this as a backup?
-        orderFromActivityType = lambda a: ordering[a['activity_type_name']]
+        orderFromActivityType = lambda a: ordering[a['activity_type_name'].split()[0]]
         for pieceplan in grouped:
             grouped[pieceplan].sort(key=orderFromActivityType)
 
@@ -115,7 +115,6 @@ class PiecePlanViewSet(
     queryset = PiecePlan.objects.prefetch_related("piece")
     lookup_field = "id"
     permission_classes = [IsTeacher]
-
 
     def get_queryset(self):
         course = Course.objects.get(slug=self.kwargs["course_slug_slug"])
