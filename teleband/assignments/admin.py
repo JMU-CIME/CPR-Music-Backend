@@ -21,7 +21,7 @@ class ActivityTypeAdmin(VersionAdmin):
 
 @admin.register(Activity)
 class ActivityAdmin(VersionAdmin):
-    list_display = ("id", "activity_type", "part_type", "body")
+    list_display = ("id", "activity_type", "part_type")
     list_filter = ("activity_type", "part_type")
 
 
@@ -32,16 +32,16 @@ class AssignmentAdmin(VersionAdmin):
         "activity",
         "enrollment",
         "part",
-        "deadline",
-        "instrument",
-        "created_at",
+        # "deadline",
+        # "instrument",
+        # "created_at",
     )
     list_filter = (
         "activity",
-        "part",
-        "deadline",
-        "instrument",
-        "created_at",
+        "piece",
+        # "deadline",
+        # "instrument",
+        # "created_at",
     )
     search_fields = ("activity__activity_type__name", "enrollment__user__username")
     date_hierarchy = "created_at"

@@ -37,7 +37,7 @@ class Submission(models.Model):
     content = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.assignment} ({self.submitted})"
+        return f"{self.assignment.id}"
 
 
 class SubmissionAttachment(models.Model):
@@ -54,4 +54,4 @@ class SubmissionAttachment(models.Model):
         ordering = ["-submitted"]
 
     def __str__(self):
-        return f"{self.submission}: {self.file}"
+        return f"{self.submission.id}: {self.file}"

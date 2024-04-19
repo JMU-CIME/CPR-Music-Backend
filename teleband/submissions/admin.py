@@ -13,7 +13,8 @@ class SubmissionAdmin(VersionAdmin):
 @admin.register(SubmissionAttachment)
 class SubmissionAttachmentAdmin(VersionAdmin):
     list_display = ("id", "submission", "file")
-    list_filter = ("submission",)
+    raw_id_fields = ("submission",)
+    # list_filter = ("submission",)
 
 
 @admin.register(Grade)

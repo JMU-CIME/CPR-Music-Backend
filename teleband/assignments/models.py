@@ -29,7 +29,7 @@ class ActivityType(models.Model):
         verbose_name_plural = "Activity Types"
 
     def __str__(self):
-        return f"{self.name}: {self.category}"
+        return f"{self.name}"
 
 
 class Activity(models.Model):
@@ -100,7 +100,7 @@ class Assignment(models.Model):
         ]
 
     def __str__(self):
-        return f"[{self.enrollment.user.username}] {self.activity} {self.part.piece}"
+        return f"[{self.enrollment.user.username}] {self.activity.id} {self.piece}"
     
 
 class AssignmentGroup(models.Model):
