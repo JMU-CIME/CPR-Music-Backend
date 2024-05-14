@@ -75,6 +75,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('assignments', '0032_auto_20240311_1235'),
+        ('users', '0007_user_instrument'),
     ]
 
     operations = [
