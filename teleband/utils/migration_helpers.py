@@ -24,6 +24,8 @@ def create_piece_et_al(apps, data):
     piece = None
     if not already_at_piece:
         piece = Piece.objects.create(name=data['name'], ensemble_type=EnsembleType.objects.get(name=data['ensemble_type']))
+        if 'video' in data:
+            piece.video = data['video']
     else:
         piece = Piece.objects.get(name="Air for Band")
     piece.accompaniment = data['accompaniment']
