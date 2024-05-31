@@ -61,7 +61,9 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 # Your stuff...
 # CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^http://localhost:3000$",  # works for local dev
-]
+CORS_ALLOWED_ORIGIN_REGEXES = [r'{}'.format(s) for s in env.list("CORS_ALLOWED_ORIGIN_REGEXES", default=[r"^http://localhost:3000$"])]
+# CORS_ALLOWED_ORIGIN_REGEXES = [
+#     r"^http://localhost:3000$",  # works for local dev
+# ]
+print('CORS_ALLOWED_ORIGIN_REGEXES', CORS_ALLOWED_ORIGIN_REGEXES)
 # ------------------------------------------------------------------------------
