@@ -1,3 +1,7 @@
+# THIS REPO IS ARCHIVED
+Find the current repo at https://github.com/Lab-Lab-Lab/CPR-Music-Backend 
+<br><br><br><br><br><br><br><br><br><br><br>
+
 # TeleBand
 
 The music education learning management system
